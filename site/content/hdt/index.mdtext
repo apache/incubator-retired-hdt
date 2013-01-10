@@ -1,4 +1,4 @@
-Title:     Welcome to Apache Incubator Hadoop Development Tools
+Title:     Apache Hadoop Development Tools
 Notice:    Licensed to the Apache Software Foundation (ASF) under one
            or more contributor license agreements.  See the NOTICE file
            distributed with this work for additional information
@@ -16,6 +16,10 @@ Notice:    Licensed to the Apache Software Foundation (ASF) under one
            specific language governing permissions and limitations
            under the License.
 
-Tools to support developing applications that use Apache Hadoop from within Eclipse.
+The Hadoop Development Tools (HDT) is a set of plugins for the Eclipse IDE for developing against the Hadoop platform.
 
-This project is currently in the process of opening in the Apache Incubator, so check back for updates, or come join us [dev@hdt.incubator.apache.org](mailto:dev-subscribe@hdt.incubator.apache.org "Send subscription email").
+Currently we are in the process of porting the existing MapReduce tools from the Apache Hadoop project to allow working with multiple versions of Hadoop from within one IDE.
+
+Come [get involved](get_involved.html) as we move towards our first release!
+
+This project is currently a member of the Apache Incubator, so check back for updates, or come join us [dev@hdt.incubator.apache.org](mailto:dev-subscribe@hdt.incubator.apache.org "Send subscription email").
