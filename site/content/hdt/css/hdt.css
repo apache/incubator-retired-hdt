@@ -1,0 +1,155 @@
+/*
+* Licensed to the Apache Software Foundation (ASF) under one or more
+* contributor license agreements.  See the NOTICE file distributed with
+* this work for additional information regarding copyright ownership.
+* The ASF licenses this file to You under the Apache License, Version 2.0
+* (the "License"); you may not use this file except in compliance with
+* the License.  You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
+body {
+    color: white;
+    font-family: Verdana,Geneva,sans-serif;
+    font-size: 10pt;
+    margin: 0;
+}
+#banner {
+    margin-top: 0;
+    min-width: 850px;
+    padding: 10px;
+}
+#logo {
+    margin-left: 20px;
+    text-align: left;
+}
+#bannertext {
+    margin-top: 10px;
+    text-align: left;
+}
+.clear {
+    clear: both;
+}
+a {
+    color: #107EC0;
+}
+a:visited {
+    color: #107EC0;
+}
+a:hover {
+    background-color: #E6EBED;
+    color: #107EC0;
+}
+a img {
+    border: medium none;
+}
+h1, h2, h3, h4, h5, h6 {
+    border-bottom: 2px dashed #666666;
+    color: black;
+    text-transform: uppercase;
+}
+#content {
+    color: #333333;
+    margin: 0 150px 20px 220px;
+    padding: 0 8px 40px;
+}
+#content h1 {
+    font-size: 1.4em;
+    padding: 15px;
+}
+#content h2 {
+    border-bottom: 1px dashed #666666;
+    font-size: 1.2em;
+    margin-top: 2em;
+}
+#content h3, h4, h5, h6 {
+    border-bottom: medium none;
+    font-size: 1em;
+    margin-bottom: 0;
+}
+#content img {
+    vertical-align: middle;
+}
+.codehilite {
+    background-color: #FFFFFF;
+    border-radius: 10px 10px 10px 10px;
+    padding: 0.01em 1em;
+}
+#navigation {
+    -moz-border-bottom-colors: none;
+    -moz-border-image: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background: none repeat scroll 0 0 #F5F8FA;
+    border-color: #C0C0C0 #C0C0C0 #C0C0C0 -moz-use-text-color;
+    border-radius: 0 10px 10px 0;
+    border-style: solid solid solid none;
+    border-width: 1px 1px 1px medium;
+    color: #000033;
+    float: left;
+    font-size: 0.9em;
+    margin: 0 0 20px;
+    padding: 15px 15px 5px 25px;
+    width: 170px;
+}
+#navigation img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+#navigation h1 {
+    border-bottom: 2px dashed #666666;
+    color: #000000;
+    font-size: 1em;
+    margin-bottom: 0;
+    margin-top: 0.8em;
+    padding: 0;
+}
+#navigation ul {
+    list-style: none outside none;
+    margin: 0;
+    padding: 0;
+}
+#navigation li {
+    border-bottom: 1px solid #CCCCCC;
+    margin: 0.2em 0;
+    padding: 0;
+}
+#navigation li a {
+    margin: 0;
+    text-decoration: none;
+}
+#navigation li a:hover {
+    background: none repeat scroll 0 0 transparent;
+    color: #193240;
+}
+#footer {
+    border-top: 1px solid #CCCCCC;
+    color: #666666;
+    font-size: 0.8em;
+    margin: 20px 150px 20px 250px;
+    padding: 0 8px;
+    text-align: center;
+}
+.copyright {
+    float: left;
+}
+#asf-logo {
+    float: left;
+    padding-top: 15px;
+}
+dd {
+}
+dl {
+}
+dt {
+    display: inline;
+    float: left;
+}

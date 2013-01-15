@@ -1,0 +1,35 @@
+Title: Getting involved with the Hadoop Development Tools
+Notice:    Licensed to the Apache Software Foundation (ASF) under one
+           or more contributor license agreements.  See the NOTICE file
+           distributed with this work for additional information
+           regarding copyright ownership.  The ASF licenses this file
+           to you under the Apache License, Version 2.0 (the
+           "License"); you may not use this file except in compliance
+           with the License.  You may obtain a copy of the License at
+           .
+             http://www.apache.org/licenses/LICENSE-2.0
+           .
+           Unless required by applicable law or agreed to in writing,
+           software distributed under the License is distributed on an
+           "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+           KIND, either express or implied.  See the License for the
+           specific language governing permissions and limitations
+           under the License.
+
+Interested in the contributing to the project? The below resources will get you up and running.
+
+## Dev Discussion List ##
+
+[dev@hdt.incubator.apache.org](mailto:dev@hdt.incubator.apache.org "Mail the dev list") is where all of the discussion around the project takes place. You'll need to [subscribe](mailto:dev-subscribe@hdt.incubator.apache.org) first, but after that, welcome!
+
+## JIRA ##
+
+The issue tracking for the HDT is done in [JIRA](https://issues.apache.org/jira/browse/HDT). Found a bug? Got a feature idea? File it with us here.
+
+## Source ##
+
+We use git for our version control. To clone our repository so you can start looking around;
+
+	git clone https://git-wip-us.apache.org/repos/asf/incubator-hdt.git
+	
+Commit notifications are available by [subscribing](mailto:commits-subscribe@hdt.incubator.hdt.org) to commits@hdt.incubator.apache.org.
