@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Hadoop Development Tools UI
+Bundle-SymbolicName: org.apache.hdt.ui
+Bundle-Version: 0.0.0
+Bundle-Activator: org.apache.hdt.ui.Activator
+Bundle-Vendor: Apache Foundation
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ActivationPolicy: lazy
