@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         id="org.apache.hdt.mrnature"
+         name="MapReduce Nature"
+         point="org.eclipse.core.resources.natures">
+      <runtime>
+         <run
+               class="org.apache.hdt.core.natures.MapReduceNature">
+         </run>
+      </runtime>
+   </extension>
+
+</plugin>
