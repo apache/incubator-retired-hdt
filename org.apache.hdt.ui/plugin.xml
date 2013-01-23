@@ -9,5 +9,13 @@
             name="Hadoop">
       </page>
    </extension>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            class="org.apache.hdt.ui.perspectives.HadoopPerspectiveFactory"
+            id="org.apache.hdt.ui.HadoopPerspective"
+            name="Hadoop">
+      </perspective>
+   </extension>
 
 </plugin>
