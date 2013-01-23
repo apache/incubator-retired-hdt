@@ -6,6 +6,11 @@ Bundle-Version: 0.0.0
 Bundle-Activator: org.apache.hdt.ui.Activator
 Bundle-Vendor: Apache Foundation
 Require-Bundle: org.eclipse.ui,
- org.eclipse.core.runtime
+ org.eclipse.core.runtime,
+ org.apache.hdt.core,
+ org.eclipse.core.resources,
+ org.eclipse.jdt.core,
+ org.eclipse.jdt.ui,
+ org.eclipse.ui.ide
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
