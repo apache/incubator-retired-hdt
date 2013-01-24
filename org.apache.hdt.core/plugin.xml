@@ -11,5 +11,22 @@
          </run>
       </runtime>
    </extension>
+   <extension
+         point="org.eclipse.core.expressions.propertyTesters">
+      <propertyTester
+            class="org.apache.hdt.core.PropertyTester"
+            id="org.apache.hdt.core.mapreduce.deployable"
+            namespace="mapreduce"
+            properties="deployable"
+            type="org.eclipse.core.resources.IResource">
+      </propertyTester>
+      <propertyTester
+            class="org.apache.hdt.core.PropertyTester"
+            id="org.apache.hdt.core.mapreduce.server"
+            namespace="mapreduce"
+            properties="server"
+            type="org.eclipse.wst.server.core.IServer">
+      </propertyTester>
+   </extension>
 
 </plugin>

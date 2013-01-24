@@ -7,7 +7,9 @@ Bundle-Activator: org.apache.hdt.core.Activator
 Bundle-Vendor: Apache Software Foundation
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.core.resources,
- org.eclipse.jdt.core
+ org.eclipse.jdt.core,
+ org.eclipse.core.expressions,
+ org.eclipse.wst.server.core
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Export-Package: org.apache.hdt.core,
