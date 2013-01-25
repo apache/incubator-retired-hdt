@@ -17,5 +17,21 @@
             name="Hadoop">
       </perspective>
    </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            id="org.apache.hdt.ui.views"
+            name="Hadoop">
+      </category>
+      <view
+            allowMultiple="false"
+            category="org.apache.hdt.ui.views"
+            class="org.apache.hdt.ui.views.ClusterView"
+            icon="resources/hadoop-logo-16x16.png"
+            id="org.apache.hdt.ui.ClusterView"
+            name="Hadoop Clusters"
+            restorable="true">
+      </view>
+   </extension>
 
 </plugin>
