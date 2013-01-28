@@ -30,6 +30,7 @@ import java.util.TreeMap;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hdt.core.cluster.HadoopCluster;
+import org.apache.hdt.core.cluster.IHadoopClusterListener;
 import org.apache.hdt.ui.Activator;
 import org.eclipse.jface.dialogs.MessageDialog;
 

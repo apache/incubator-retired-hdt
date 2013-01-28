@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: OSGi Hadoop Bungle
+Bundle-Name: OSGi Hadoop Bundle
 Bundle-SymbolicName: org.apache.hadoop.eclipse
 Bundle-Version: 0.0.0
 Bundle-Vendor: Apache Software Foundation
@@ -103,3 +103,4 @@ Export-Package: org.apache.hadoop,
  org.apache.hadoop.util,
  org.apache.hadoop.util.bloom,
  org.apache.hadoop.util.hash
+Bundle-ClassPath: lib/hadoop-core-1.0.4.jar

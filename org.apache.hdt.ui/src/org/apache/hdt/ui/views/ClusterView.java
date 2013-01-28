@@ -22,12 +22,12 @@ import java.util.Collection;
 
 import org.apache.hdt.core.cluster.HadoopCluster;
 import org.apache.hdt.core.cluster.HadoopJob;
+import org.apache.hdt.core.cluster.IHadoopClusterListener;
 import org.apache.hdt.core.cluster.IJobListener;
 import org.apache.hdt.core.cluster.utils.JarModule;
 import org.apache.hdt.ui.ImageLibrary;
 import org.apache.hdt.ui.actions.EditLocationAction;
 import org.apache.hdt.ui.actions.NewLocationAction;
-import org.apache.hdt.ui.cluster.IHadoopClusterListener;
 import org.apache.hdt.ui.cluster.ServerRegistry;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
