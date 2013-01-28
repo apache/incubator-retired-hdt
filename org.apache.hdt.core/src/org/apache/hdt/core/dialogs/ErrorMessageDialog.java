@@ -16,23 +16,30 @@
  * limitations under the License.
  */
 
-package org.apache.hdt.ui.cluster;
+package org.apache.hdt.core.dialogs;
 
-import org.apache.hdt.ui.cluster.utils.JarModule;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.widgets.Display;
 
 /**
- * Interface for updating/adding jobs to the MapReduce Server view.
+ * Error dialog helper
  */
-public interface IJobListener {
+public class ErrorMessageDialog {
 
-  void jobChanged(HadoopJob job);
+  public static void display(final String title, final String message) {
+    Display.getDefault().syncExec(new Runnable() {
 
-  void jobAdded(HadoopJob job);
+      public void run() {
+        MessageDialog.openError(Display.getDefault().getActiveShell(),
+            title, message);
+      }
 
-  void jobRemoved(HadoopJob job);
+    });
+  }
 
-  void publishStart(JarModule jar);
-
-  void publishDone(JarModule jar);
+  public static void display(Exception e) {
+    display("An exception has occured!", "Exception description:\n"
+        + e.getLocalizedMessage());
+  }
 
 }

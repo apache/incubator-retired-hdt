@@ -18,7 +18,7 @@
 
 package org.apache.hdt.ui.cluster;
 
-import org.apache.hdt.ui.cluster.HadoopCluster;
+import org.apache.hdt.core.cluster.HadoopCluster;
 
 /**
  * Interface for monitoring server changes

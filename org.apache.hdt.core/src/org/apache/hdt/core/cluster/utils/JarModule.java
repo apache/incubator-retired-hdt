@@ -16,13 +16,13 @@
  * limitations under the License.
  */
 
-package org.apache.hdt.ui.cluster.utils;
+package org.apache.hdt.core.cluster.utils;
 
 import java.io.File;
 import java.util.logging.Logger;
 
-import org.apache.hdt.ui.Activator;
-import org.apache.hdt.ui.dialogs.ErrorMessageDialog;
+import org.apache.hdt.core.Activator;
+import org.apache.hdt.core.dialogs.ErrorMessageDialog;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;

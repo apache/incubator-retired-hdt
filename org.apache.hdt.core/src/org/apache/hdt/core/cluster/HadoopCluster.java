@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.hdt.ui.cluster;
+package org.apache.hdt.core.cluster;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -34,8 +34,11 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.hadoop.conf.Configuration;
-import org.apache.hdt.ui.Activator;
-import org.apache.hdt.ui.cluster.utils.JarModule;
+import org.apache.hdt.core.Activator;
+import org.apache.hdt.core.cluster.ConfProp;
+import org.apache.hdt.core.cluster.HadoopJob;
+import org.apache.hdt.core.cluster.IJobListener;
+import org.apache.hdt.core.cluster.utils.JarModule;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.io.IOUtils;
 import org.apache.hadoop.mapred.JobClient;

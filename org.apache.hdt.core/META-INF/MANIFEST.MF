@@ -9,8 +9,14 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.core.resources,
  org.eclipse.jdt.core,
  org.eclipse.core.expressions,
- org.eclipse.wst.server.core
+ org.eclipse.wst.server.core,
+ org.eclipse.swt,
+ org.eclipse.jface,
+ org.eclipse.ui,
+ org.eclipse.jdt.ui
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Export-Package: org.apache.hdt.core,
+ org.apache.hdt.core.cluster,
+ org.apache.hdt.core.cluster.utils,
  org.apache.hdt.core.natures

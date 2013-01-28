@@ -29,8 +29,8 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hdt.core.cluster.HadoopCluster;
 import org.apache.hdt.ui.Activator;
-import org.apache.hdt.ui.cluster.HadoopCluster;
 import org.eclipse.jface.dialogs.MessageDialog;
 
 /**

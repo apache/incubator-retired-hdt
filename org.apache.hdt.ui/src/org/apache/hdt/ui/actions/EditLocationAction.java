@@ -18,8 +18,8 @@
 
 package org.apache.hdt.ui.actions;
 
+import org.apache.hdt.core.cluster.HadoopCluster;
 import org.apache.hdt.ui.ImageLibrary;
-import org.apache.hdt.ui.cluster.HadoopCluster;
 import org.apache.hdt.ui.wizards.HadoopLocationWizard;
 import org.apache.hdt.ui.views.ClusterView;
 import org.eclipse.jface.action.Action;

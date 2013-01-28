@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.hdt.ui.cluster;
+package org.apache.hdt.core.cluster;
 
 import java.util.HashMap;
 import java.util.Map;
