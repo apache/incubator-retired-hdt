@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.hdt.ui.cluster;
+package org.apache.hdt.core.cluster;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -29,9 +29,7 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import org.apache.hadoop.conf.Configuration;
-import org.apache.hdt.core.cluster.HadoopCluster;
-import org.apache.hdt.core.cluster.IHadoopClusterListener;
-import org.apache.hdt.ui.Activator;
+import org.apache.hdt.core.Activator;
 import org.eclipse.jface.dialogs.MessageDialog;
 
 /**

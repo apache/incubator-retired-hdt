@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Hadoop Development Tools DFS Core
+Bundle-SymbolicName: org.apache.hdt.dfs.core
+Bundle-Version: 0.0.0
+Bundle-Activator: org.apache.hdt.dfs.core.Activator
+Bundle-Vendor: Apache Software Foundation
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.apache.hdt.core,
+ org.apache.hadoop.eclipse,
+ org.apache.hdt.ui,
+ org.eclipse.core.resources
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ActivationPolicy: lazy

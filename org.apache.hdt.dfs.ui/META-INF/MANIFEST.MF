@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Hadoop Development Tools HDFS UI
+Bundle-SymbolicName: org.apache.hdt.dfs.ui;singleton:=true
+Bundle-Version: 0.0.0
+Bundle-Activator: org.apache.hdt.dfs.ui.Activator
+Bundle-Vendor: Apache Software Foundation
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.wst.server.core,
+ org.apache.hadoop.eclipse,
+ org.apache.hdt.dfs.core
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ActivationPolicy: lazy

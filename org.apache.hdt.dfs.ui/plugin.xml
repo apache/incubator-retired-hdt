@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.navigator.navigatorContent">
+      <navigatorContent
+            activeByDefault="true"
+            contentProvider="org.apache.hadoop.eclipse.dfs.DFSContentProvider"
+            icon="resources/elephantblue16x16.gif"
+            id="org.apache.hadoop.eclipse.views.dfscontent"
+            labelProvider="org.apache.hadoop.eclipse.dfs.DFSContentProvider"
+            name="Hadoop Distributed File Systems"
+            priority="normal"
+            providesSaveables="false">
+         <triggerPoints>
+            <or>
+               <instanceof
+                     value="org.apache.hadoop.eclipse.dfs.DFSPath">
+               </instanceof>
+               <adapt
+                     type="org.eclipse.core.resources.IResource">
+                  <test
+                        forcePluginActivation="true"
+                        property="mapreduce.deployable">
+                  </test>
+               </adapt>
+            </or>
+         </triggerPoints>
+         <actionProvider
+               class="org.apache.hadoop.eclipse.dfs.ActionProvider">
+         </actionProvider>
+         <possibleChildren>
+            <or>
+               <instanceof
+                     value="org.eclipse.wst.server.core.IServer">
+               </instanceof>
+               <instanceof
+                     value="org.apache.hdt.dfs.core.DFSLocationsRoot">
+               </instanceof>
+               <instanceof
+                     value="org.apache.hdt.dfs.core.DFSLocation">
+               </instanceof>
+               <instanceof
+                     value="org.apache.hdt.dfs.core.DFSPath">
+               </instanceof>
+            </or>
+         </possibleChildren>
+      </navigatorContent>
+   </extension>
+</plugin>

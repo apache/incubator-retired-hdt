@@ -31,7 +31,7 @@ import java.util.Map.Entry;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hdt.core.cluster.ConfProp;
 import org.apache.hdt.core.cluster.HadoopCluster;
-import org.apache.hdt.ui.cluster.ServerRegistry;
+import org.apache.hdt.core.cluster.ServerRegistry;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
