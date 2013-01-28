@@ -19,4 +19,5 @@ Bundle-ActivationPolicy: lazy
 Export-Package: org.apache.hdt.core,
  org.apache.hdt.core.cluster,
  org.apache.hdt.core.cluster.utils,
+ org.apache.hdt.core.dialogs,
  org.apache.hdt.core.natures
