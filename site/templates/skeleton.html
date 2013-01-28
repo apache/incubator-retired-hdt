@@ -21,13 +21,23 @@
 			{% filter markdown %}{% include "sidenav.mdtext" %}{% endfilter %}
 		</div>
 		<div id="bannertext">
-			<img id="logo" alt="Apache Hadoop Development Tools" src="images/hadoop-logo.jpg" name="logo">™
+			<img id="logo" alt="Apache Hadoop Development Tools" src="images/hdt.png" name="logo">™
+			<img style="float:right" src="http://incubator.apache.org/images/egg-logo.png" alt="apache Incubator Logo" />
 		</div>
 		<div id="content">
 			<h1 class="title">
 				{% block title %}{{ headers.title }}{% endblock %}
 			</h1>{% block content %}{{ content|markdown }}{% endblock %}
-		</div>
+		<h2 id="disclaimer">Disclaimer</h2>
+<p>Apache Hadoop Development Tools is an effort undergoing incubation at <a href="http://apache.org/">The Apache Software Foundation
+(ASF)</a> sponsored by the <a href="http://incubator.apache.org/">Apache Incubator PMC</a>.
+Incubation is required of all newly accepted projects until a further review
+indicates that the infrastructure, communications, and decision making process
+have stabilized in a manner consistent with other successful ASF projects.
+While incubation status is not necessarily a reflection of the completeness or
+stability of the code, it does indicate that the project has yet to be fully
+endorsed by the ASF.</p>
+</div>
 		<div id="copyright" class="container_16">
 			<p>
 				Copyright © 2011 The Apache Software Foundation, Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.<br>
