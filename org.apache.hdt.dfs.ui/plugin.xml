@@ -7,7 +7,7 @@
             activeByDefault="true"
             contentProvider="org.apache.hadoop.eclipse.dfs.DFSContentProvider"
             icon="resources/elephantblue16x16.gif"
-            id="org.apache.hadoop.eclipse.views.dfscontent"
+            id="org.apache.hdt.dfs.views.dfscontent"
             labelProvider="org.apache.hadoop.eclipse.dfs.DFSContentProvider"
             name="Hadoop Distributed File Systems"
             priority="normal"
@@ -46,5 +46,51 @@
             </or>
          </possibleChildren>
       </navigatorContent>
+   </extension>
+      <extension
+         point="org.eclipse.ui.navigator.viewer">
+      <viewer
+            viewerId="org.apache.hdt.dfs.DFSViewer">
+            
+          <popupMenu
+                allowsPlatformContributions="true"
+                id="org.apache.hdt.dfs.DFSViewer#PopupMenu">  
+             <insertionPoint name="group.new"/>
+             <insertionPoint
+                   name="group.open"
+                   separator="true"/>
+             <insertionPoint name="group.openWith"/>   
+             <insertionPoint name="group.edit"
+                   separator="true"/>   
+             <insertionPoint name="group.reorganize" />         
+             <insertionPoint
+                   name="group.port"
+                   separator="true"/>     
+             <insertionPoint
+                   name="group.build"
+                   separator="true"/> 
+             <insertionPoint
+                   name="group.generate"
+                   separator="true"/> 
+             <insertionPoint
+                   name="group.search"
+                   separator="true"/>              
+             <insertionPoint
+                   name="additions"
+                   separator="true"/>              
+             <insertionPoint
+                   name="group.properties"
+                   separator="true"/>
+          </popupMenu>
+            
+      </viewer>
+      <viewerContentBinding viewerId="org.eclipse.ui.navigator.ProjectExplorer">
+         <includes>
+            <contentExtension
+                  isRoot="false"
+                  pattern="org.apache.hdt.dfs.views.dfscontent"/>
+            <actionExtension pattern="org.apache.hdt.dfs.views.dfscontent.*"/>
+         </includes>
+      </viewerContentBinding>
    </extension>
 </plugin>
