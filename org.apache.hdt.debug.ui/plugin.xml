@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.debug.ui.launchShortcuts">
+      <shortcut
+            class="org.apache.hdt.debug.core.launch.HadoopApplicationLaunchShortcut"
+            icon="resources/elephantblue16x16.gif"
+            id="org.apache.hadoop.eclipse.launch.shortcut"
+            label="Run on Hadoop"
+            modes="run">
+         <contextualLaunch>
+
+           <enablement>
+             <with variable="selection">
+               <count value="1"/>
+               <iterate>
+                <or>
+               	  <test property="org.eclipse.jdt.launching.hasMain"/>
+               	  <and>
+               	     <test property="org.eclipse.jdt.launching.isContainer"/>
+               	     <test property="org.eclipse.jdt.launching.hasProjectNature" args="org.eclipse.jdt.core.javanature"/>
+               	     <test property="org.eclipse.jdt.launching.hasProjectNature" args="org.apache.hadoop.eclipse.Nature"/>               	     
+               	  </and>
+               	</or>
+               </iterate>
+               </with>
+           </enablement>
+  		 </contextualLaunch>
+      </shortcut>
+   </extension>
+</plugin>

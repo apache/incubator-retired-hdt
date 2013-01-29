@@ -1,0 +1,22 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Hadoop Development Tools Debug Core
+Bundle-SymbolicName: org.apache.hdt.debug.core
+Bundle-Version: 0.0.0
+Bundle-Activator: org.apache.hdt.debug.core.Activator
+Bundle-Vendor: Apache Software Foundation
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.apache.hdt.core,
+ org.apache.hadoop.eclipse,
+ org.eclipse.core.resources,
+ org.eclipse.debug.core,
+ org.eclipse.jdt.core,
+ org.eclipse.jdt.debug.ui,
+ org.eclipse.jdt.launching,
+ org.eclipse.debug.ui
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ActivationPolicy: lazy
+Export-Package: org.apache.hdt.debug.core,
+ org.apache.hdt.debug.core.cluster,
+ org.apache.hdt.debug.core.launch
