@@ -139,7 +139,10 @@ h1, h2, h3, h4, h5, h6 {
     text-align: center;
 }
 .copyright {
-    float: left;
+    font-family: Verdana, arial, sans-serif;
+    font-size: 10px;
+    text-align:center;
+    color: #a0a0a0;
 }
 #asf-logo {
     float: left;
