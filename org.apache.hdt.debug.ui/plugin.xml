@@ -6,7 +6,7 @@
       <shortcut
             class="org.apache.hdt.debug.core.launch.HadoopApplicationLaunchShortcut"
             icon="resources/elephantblue16x16.gif"
-            id="org.apache.hadoop.eclipse.launch.shortcut"
+            id="org.apache.hdt.launch.shortcut"
             label="Run on Hadoop"
             modes="run">
          <contextualLaunch>
@@ -20,7 +20,7 @@
                	  <and>
                	     <test property="org.eclipse.jdt.launching.isContainer"/>
                	     <test property="org.eclipse.jdt.launching.hasProjectNature" args="org.eclipse.jdt.core.javanature"/>
-               	     <test property="org.eclipse.jdt.launching.hasProjectNature" args="org.apache.hadoop.eclipse.Nature"/>               	     
+               	     <test property="org.eclipse.jdt.launching.hasProjectNature" args="org.apache.hdt.mrature"/>               	     
                	  </and>
                	</or>
                </iterate>

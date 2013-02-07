@@ -45,7 +45,7 @@ import org.apache.hdt.core.Activator;
 
 public class MapReduceNature implements IProjectNature {
 
-  public static final String ID = "org.apache.hadoop.eclipse.Nature";
+  public static final String ID = "org.apache.hdt.mrnature";
 
   private IProject project;
 

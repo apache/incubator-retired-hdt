@@ -8,14 +8,14 @@
             contentProvider="org.apache.hadoop.eclipse.dfs.DFSContentProvider"
             icon="resources/elephantblue16x16.gif"
             id="org.apache.hdt.dfs.views.dfscontent"
-            labelProvider="org.apache.hadoop.eclipse.dfs.DFSContentProvider"
+            labelProvider="org.apache.hdt.dfs.core.DFSContentProvider"
             name="Hadoop Distributed File Systems"
             priority="normal"
             providesSaveables="false">
          <triggerPoints>
             <or>
                <instanceof
-                     value="org.apache.hadoop.eclipse.dfs.DFSPath">
+                     value="org.apache.hdt.dfs.core.DFSPath">
                </instanceof>
                <adapt
                      type="org.eclipse.core.resources.IResource">

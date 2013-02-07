@@ -13,6 +13,7 @@
          point="org.eclipse.ui.perspectives">
       <perspective
             class="org.apache.hdt.ui.perspectives.HadoopPerspectiveFactory"
+            icon="resources/hadoop-logo-16x16.png"
             id="org.apache.hdt.ui.HadoopPerspective"
             name="Hadoop">
       </perspective>
@@ -32,6 +33,44 @@
             name="Hadoop Clusters"
             restorable="true">
       </view>
+   </extension>
+	<extension
+         point="org.eclipse.ui.newWizards">
+      <primaryWizard id="org.apache.hdt.ui.NewProjectWizard"/> 
+      <wizard
+            category="org.apache.hdt.category"
+            class="org.apache.hdt.ui.wizards.NewMapReduceProjectWizard"
+            finalPerspective="org.apache.hdt.ui.HadoopPerspective"
+            hasPages="true"
+            icon="resources/Elephant16x16.gif"
+            id="org.apache.hadoop.eclipse.NewProjectWizard"
+            name="Map/Reduce Project"
+            preferredPerspectives="org.apache.hadoop.eclipse.Perspective"
+            project="true"/>
+      <wizard
+            category="org.apache.hdt.category"
+            class="org.apache.hdt.ui.wizards.NewMapperWizard"
+            icon="resources/mapper16.png"
+            id="org.apache.hadoop.eclipse.NewMapperWizard"
+            name="Mapper"
+            project="false"/>
+      <wizard
+            category="org.apache.hdt.category"
+            class="org.apache.hdt.ui.wizards.NewReducerWizard"
+            icon="resources/reducer16.png"
+            id="org.apache.hadoop.eclipse.NewReducerWizard"
+            name="Reducer"
+            project="false"/>
+      <wizard
+            category="org.apache.hdt.category"
+            class="org.apache.hdt.ui.wizards.NewDriverWizard"
+            icon="resources/driver.png"
+            id="org.apache.hadoop.eclipse.NewDriverWizard"
+            name="MapReduce Driver"
+            project="false"/>
+      <category
+            id="org.apache.hdt.category"
+            name="Hadoop"/>
    </extension>
 
 </plugin>

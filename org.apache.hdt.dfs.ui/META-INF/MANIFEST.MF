@@ -9,6 +9,10 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.wst.server.core,
  org.apache.hadoop.eclipse,
- org.apache.hdt.dfs.core
+ org.apache.hdt.dfs.core,
+ org.eclipse.core.resources,
+ org.eclipse.ui.navigator,
+ org.apache.hdt.ui
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
+Import-Package: org.eclipse.ui
