@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Hadoop Development Tools Debug UI
 Bundle-SymbolicName: org.apache.hdt.debug.ui;singleton:=true
-Bundle-Version: 0.0.0
+Bundle-Version: 0.0.1.qualifier
 Bundle-Activator: org.apache.hdt.debug.ui.Activator
 Bundle-Vendor: Apache Software Foundation
 Require-Bundle: org.eclipse.ui,

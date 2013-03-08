@@ -1,26 +1,34 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>com.yahoo</groupId>
-  <artifactId>eclipse.mechanic.master</artifactId>
-  <version>0.0.1</version>
+  <groupId>org.apache.hdt</groupId>
+  <artifactId>hdt.master</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
   <packaging>pom</packaging>
-  <name>Yahoo! Hadoop Eclipse Mechanic</name>
-  <description>Configuration for Eclipse for Hadoop development at Yahoo!</description>
+  <name>Apache Hadoop Development Tools</name>
+  <description>Eclipse tools for developing against the Hadoop platform</description>
   <modules>
-  	<module>com.yahoo.eclipse.mechanic</module>
-  	<module>com.yahoo.eclipse.mechanic.ui</module>
-	<module>com.yahoo.eclipse.mechanic.update</module>
+  	<module>org.apache.hadoop.eclipse</module>
+    <module>org.apache.hdt.core</module>
+    <module>org.apache.hdt.ui</module>
+    <module>org.apache.hdt.debug.core</module>
+    <module>org.apache.hdt.debug.ui</module>
+    <module>org.apache.hdt.dfs.core</module>
+    <module>org.apache.hdt.dfs.ui</module>
+    <module>org.apache.hdt.help</module>
+    <module>org.apache.hdt</module>
+    <module>org.apache.hdt.update</module>
   </modules>
 
   <properties>
     <tycho-version>0.16.0</tycho-version>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
   <repositories>
     <repository>
-      <id>indigo</id>
+      <id>juno</id>
       <layout>p2</layout>
-      <url>http://download.eclipse.org/releases/indigo</url>
+      <url>http://download.eclipse.org/releases/juno</url>
     </repository>
   </repositories>
 
@@ -31,6 +39,15 @@
         <artifactId>tycho-maven-plugin</artifactId>
         <version>${tycho-version}</version>
         <extensions>true</extensions>
+      </plugin>
+
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.0</version>
+        <configuration>
+          <source>1.6</source>
+          <target>1.6</target>
+        </configuration>
       </plugin>
 
     </plugins>

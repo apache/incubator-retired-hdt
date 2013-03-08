@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: OSGi Hadoop Bundle
 Bundle-SymbolicName: org.apache.hadoop.eclipse
-Bundle-Version: 0.0.0
+Bundle-Version: 0.0.1.qualifier
 Bundle-Vendor: Apache Software Foundation
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.apache.hadoop,

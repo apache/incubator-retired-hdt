@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <feature url="features/org.apache.hdt_0.0.1.qualifier.jar" id="org.apache.hdt" version="0.0.1.qualifier">
+      <category name="org.apache.hdt"/>
+   </feature>
+   <category-def name="org.apache.hdt" label="Apache Hadoop Development Tools"/>
+</site>
