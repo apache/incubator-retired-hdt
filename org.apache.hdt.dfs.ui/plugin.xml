@@ -5,7 +5,7 @@
          point="org.eclipse.ui.navigator.navigatorContent">
       <navigatorContent
             activeByDefault="true"
-            contentProvider="org.apache.hadoop.eclipse.dfs.DFSContentProvider"
+            contentProvider="org.apache.hdt.dfs.core.DFSContentProvider"
             icon="resources/elephantblue16x16.gif"
             id="org.apache.hdt.dfs.views.dfscontent"
             labelProvider="org.apache.hdt.dfs.core.DFSContentProvider"
@@ -27,7 +27,7 @@
             </or>
          </triggerPoints>
          <actionProvider
-               class="org.apache.hadoop.eclipse.dfs.ActionProvider">
+               class="org.apache.hdt.dfs.ui.DFSActionProvider">
          </actionProvider>
          <possibleChildren>
             <or>
