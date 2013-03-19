@@ -34,30 +34,30 @@ import org.eclipse.ui.console.IConsoleConstants;
 public class HadoopPerspectiveFactory implements IPerspectiveFactory {
 
   public void createInitialLayout(IPageLayout layout) {
-    layout.addNewWizardShortcut("org.apache.hadoop.eclipse.NewDriverWizard");
-    layout.addNewWizardShortcut("org.apache.hadoop.eclipse.NewMapperWizard");
+    layout.addNewWizardShortcut("org.apache.hdt.ui.NewDriverWizard");
+    layout.addNewWizardShortcut("org.apache.hdt.ui.NewMapperWizard");
     layout
-        .addNewWizardShortcut("org.apache.hadoop.eclipse.NewReducerWizard");
+        .addNewWizardShortcut("org.apache.hdt.ui.NewReducerWizard");
 
     IFolderLayout left =
-        layout.createFolder("org.apache.hadoop.eclipse.perspective.left",
+        layout.createFolder("org.apache.hdt.ui.HadoopPerspective.left",
             IPageLayout.LEFT, 0.2f, layout.getEditorArea());
     left.addView("org.eclipse.ui.navigator.ProjectExplorer");
 
     IFolderLayout bottom =
-        layout.createFolder("org.apache.hadoop.eclipse.perspective.bottom",
+        layout.createFolder("org.apache.hdt.ui.HadoopPerspective.bottom",
             IPageLayout.BOTTOM, 0.7f, layout.getEditorArea());
     bottom.addView(IPageLayout.ID_PROBLEM_VIEW);
     bottom.addView(IPageLayout.ID_TASK_LIST);
     bottom.addView(JavaUI.ID_JAVADOC_VIEW);
-    bottom.addView("org.apache.hadoop.eclipse.view.servers");
+    bottom.addView("org.apache.hdt.ui.ClusterView");
     bottom.addPlaceholder(JavaUI.ID_SOURCE_VIEW);
     bottom.addPlaceholder(IPageLayout.ID_PROGRESS_VIEW);
     bottom.addPlaceholder(IConsoleConstants.ID_CONSOLE_VIEW);
     bottom.addPlaceholder(IPageLayout.ID_BOOKMARKS);
 
     IFolderLayout right =
-        layout.createFolder("org.apache.hadoop.eclipse.perspective.right",
+        layout.createFolder("org.apache.hdt.ui.HadoopPerspective.right",
             IPageLayout.RIGHT, 0.8f, layout.getEditorArea());
     right.addView(IPageLayout.ID_OUTLINE);
     right.addView("org.eclipse.ui.cheatsheets.views.CheatSheetView");
