@@ -33,3 +33,7 @@ We use git for our version control. To clone our repository so you can start loo
 	git clone https://git-wip-us.apache.org/repos/asf/incubator-hdt.git
 	
 Commit notifications are available by [subscribing](mailto:commits-subscribe@hdt.incubator.hdt.org) to commits@hdt.incubator.apache.org.
+
+## FishEye ##
+
+Thanks to Atlassian, we have space with FishEye for the HDT, go to [https://fisheye6.atlassian.com/browse/HDT](https://fisheye6.atlassian.com/browse/HDT) to join up.
