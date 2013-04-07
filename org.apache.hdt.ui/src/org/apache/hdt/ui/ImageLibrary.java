@@ -133,6 +133,8 @@ public class ImageLibrary {
     newImage("wizard.reducer.new", "reducewiz.png");
     newImage("wizard.driver.new", "driverwiz.png");
     newImage("wizard.mapreduce.project.new", "projwiz.png");
+    newImage("wizard.partitioner.new", "partitionwiz.png");
+    
   }
 
   /**
