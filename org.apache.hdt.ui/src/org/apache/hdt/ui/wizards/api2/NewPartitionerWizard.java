@@ -19,6 +19,7 @@
 package org.apache.hdt.ui.wizards.api2;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import org.apache.hdt.ui.ImageLibrary;
@@ -103,15 +104,30 @@ public class NewPartitionerWizard extends NewElementWizard implements INewWizard
     protected void createTypeMembers(IType newType, ImportsManager imports,
         IProgressMonitor monitor) throws CoreException {
       super.createTypeMembers(newType, imports, monitor);
-      imports.addImport("java.io.IOException");
+      imports.addImport("java.util.HashMap");
       imports.addImport("org.apache.hadoop.io.Text");
-      imports.addImport("org.apache.hadoop.io.IntWritable");
-      imports.addImport("org.apache.hadoop.io.LongWritable");
-      imports.addImport("org.apache.hadoop.mapreduce.Mapper");
+      imports.addImport("org.apache.hadoop.conf.Configurable");
+      imports.addImport("org.apache.hadoop.conf.Configuration");
+      imports.addImport("org.apache.hadoop.mapreduce.Partitioner");
+      
+ 
       newType
-          .createMethod(
-              "public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException \n{\n}\n",
-              null, false, monitor);
+      .createMethod(
+          "	  @Override\n" +
+	      "   public Configuration getConf() { \n" +
+		  "     // TODO Auto-generated method stub \n" +
+		  "     return null;\n" +
+	      "   }\n\n" +
+	      "	  @Override\n" +
+	      "	  public void setConf(Configuration conf) {\n" +
+	      "	    // TODO Auto-generated method stub\n" +
+	      "	  }\n\n" +
+		  "	  @Override\n" +
+		  "	  public int getPartition(Text key, Text value, int nr) { \n" +
+          "	  // TODO Auto-generated method stub \n" +
+          "	  return 0; \n" +
+		  "	  }\n", null, false,
+          monitor);
     }
 
     public void createControl(Composite parent) {
@@ -133,7 +149,10 @@ public class NewPartitionerWizard extends NewElementWizard implements INewWizard
 
       setControl(composite);
 
-      setSuperClass("org.apache.hadoop.mapreduce.Mapper<LongWritable, Text, Text, IntWritable>", true);
+      setSuperClass("org.apache.hadoop.mapreduce.Partitioner<Text, Text>", true);
+      ArrayList al = new ArrayList();
+      al.add("org.apache.hadoop.conf.Configurable");
+      setSuperInterfaces(al, true);
 
       setFocus();
       validate();

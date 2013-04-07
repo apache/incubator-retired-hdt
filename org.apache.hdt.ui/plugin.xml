@@ -72,5 +72,55 @@
             id="org.apache.hdt.category"
             name="Hadoop"/>
    </extension>
+   
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <primaryWizard id="org.apache.hdt.ui.NewProjectWizard2"/> 
+      <wizard
+            category="org.apache.hdt.category2"
+            class="org.apache.hdt.ui.wizards.api2.NewMapReduceProjectWizard"
+            finalPerspective="org.apache.hdt.ui.HadoopPerspective"
+            hasPages="true"
+            icon="resources/Elephant16x16.gif"
+            id="org.apache.hdt.ui.NewProjectWizard2"
+            name="Map/Reduce Project (new API)"
+            preferredPerspectives="org.apache.hadoop.eclipse.Perspective"
+            project="true"/>
+      <wizard
+            category="org.apache.hdt.category2"
+            class="org.apache.hdt.ui.wizards.api2.NewMapperWizard"
+            icon="resources/mapper16.png"
+            id="org.apache.hdt.ui.NewMapperWizard2"
+            name="Mapper (new API)"
+            project="false"/>
+      <wizard
+            category="org.apache.hdt.category2"
+            class="org.apache.hdt.ui.wizards.api2.NewReducerWizard"
+            icon="resources/reducer16.png"
+            id="org.apache.hdt.ui.NewReducerWizard2"
+            name="Reducer (new API)"
+            project="false"/>
+      <wizard
+            category="org.apache.hdt.category2"
+            class="org.apache.hdt.ui.wizards.api2.NewDriverWizard"
+            icon="resources/driver.png"
+            id="org.apache.hdt.ui.NewDriverWizard2"
+            name="MapReduce Driver (new API)"
+            project="false"/>
+      <wizard
+            category="org.apache.hdt.category2"
+            class="org.apache.hdt.ui.wizards.api2.NewPartitionerWizard"
+            finalPerspective="org.apache.hdt.ui.HadoopPerspective"
+            hasPages="true"
+            icon="resources/Elephant16x16.gif"
+            id="org.apache.hdt.ui.NewPartitionerWizard2"
+            name="Partitioner (new API)"
+            preferredPerspectives="org.apache.hadoop.eclipse.Perspective"
+            project="false"/>
+       
+      <category
+            id="org.apache.hdt.category2"
+            name="Hadoop (new API)"/>
+   </extension>
 
 </plugin>
