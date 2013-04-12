@@ -58,13 +58,9 @@ public class HadoopApplicationLaunchShortcut extends
 
   /* @inheritDoc */
   @Override
-  protected ILaunchConfiguration findLaunchConfiguration(IType type,
-      ILaunchConfigurationType configType) {
+  protected ILaunchConfiguration createConfiguration(IType type) {
 
-    // Find an existing or create a launch configuration (Standard way)
-    ILaunchConfiguration iConf =
-        super.findLaunchConfiguration(type, configType);
-    if (iConf == null) iConf = super.createConfiguration(type);
+    ILaunchConfiguration iConf = super.createConfiguration(type);
     ILaunchConfigurationWorkingCopy iConfWC;
     try {
       /*
