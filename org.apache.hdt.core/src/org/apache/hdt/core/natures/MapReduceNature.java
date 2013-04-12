@@ -71,7 +71,7 @@ public class MapReduceNature implements IProjectNature {
 
         // get the hadoop core jar without touching test or examples
         // older version of hadoop don't use the word "core" -- eyhung
-        if ((fileName.indexOf("hadoop-core") != -1) && (fileName.endsWith("jar"))
+        if ((fileName.indexOf("hadoop") != -1) && (fileName.endsWith("jar"))
             && (fileName.indexOf("test") == -1)
             && (fileName.indexOf("examples") == -1)) {
           coreJars.add(pathname);
@@ -80,6 +80,19 @@ public class MapReduceNature implements IProjectNature {
         return false; // we don't care what this returns
       }
     });
+    File dir2 = new File(path + File.separatorChar + "lib");
+    if (dir2.exists() && dir2.isDirectory()) {
+      dir2.listFiles(new FileFilter() {
+        public boolean accept(File pathname) {
+          if ((!pathname.isDirectory())
+              && (pathname.getName().endsWith("jar"))) {
+            coreJars.add(pathname);
+          }
+
+          return false; // we don't care what this returns
+        }
+      });
+    }
 
     // Add Hadoop libraries onto classpath
     IJavaProject javaProject = JavaCore.create(getProject());
