@@ -20,6 +20,8 @@ package org.apache.hdt.core.natures;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -29,12 +31,15 @@ import java.util.logging.Logger;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectNature;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
+import org.osgi.framework.Bundle;
 
 import org.apache.hdt.core.Activator;
 
@@ -62,37 +67,27 @@ public class MapReduceNature implements IProjectNature {
     String path =
         project.getPersistentProperty(new QualifiedName(Activator.PLUGIN_ID,
             "hadoop.runtime.path"));
+    
+    Bundle hadoopBundle = Platform.getBundle("org.apache.hadoop.eclipse");
+    URL jarLib = hadoopBundle.getEntry("lib/");
+    
+    File jarDir = null;
+    try {
+		jarDir = new File(FileLocator.resolve(jarLib).toURI());
+	} catch (URISyntaxException e1) {
+		// TODO Auto-generated catch block
+		e1.printStackTrace();
+	} catch (IOException e1) {
+		// TODO Auto-generated catch block
+		e1.printStackTrace();
+	}
+    
+    File[] jars = jarDir.listFiles(); 
 
-    File dir = new File(path);
     final ArrayList<File> coreJars = new ArrayList<File>();
-    dir.listFiles(new FileFilter() {
-      public boolean accept(File pathname) {
-        String fileName = pathname.getName();
-
-        // get the hadoop core jar without touching test or examples
-        // older version of hadoop don't use the word "core" -- eyhung
-        if ((fileName.indexOf("hadoop") != -1) && (fileName.endsWith("jar"))
-            && (fileName.indexOf("test") == -1)
-            && (fileName.indexOf("examples") == -1)) {
-          coreJars.add(pathname);
-        }
-
-        return false; // we don't care what this returns
-      }
-    });
-    File dir2 = new File(path + File.separatorChar + "lib");
-    if (dir2.exists() && dir2.isDirectory()) {
-      dir2.listFiles(new FileFilter() {
-        public boolean accept(File pathname) {
-          if ((!pathname.isDirectory())
-              && (pathname.getName().endsWith("jar"))) {
-            coreJars.add(pathname);
-          }
-
-          return false; // we don't care what this returns
-        }
-      });
-    }
+    for (File file : jars) {
+		coreJars.add(file);
+	}
 
     // Add Hadoop libraries onto classpath
     IJavaProject javaProject = JavaCore.create(getProject());
