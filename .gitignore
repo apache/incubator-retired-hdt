@@ -1,3 +1,3 @@
 *.class
-*.DS_Storetarget/
+.DS_Store
 target/
