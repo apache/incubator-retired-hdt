@@ -19,6 +19,7 @@
 package org.apache.hdt.ui.wizards;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import org.apache.hdt.ui.ImageLibrary;
@@ -37,22 +38,23 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 
 /**
- * Wizard for creating a new Reducer class (a class that runs the Reduce
- * portion of a MapReduce job). The class is pre-filled with a template.
+ * Wizard for creating a new Partitioner class (a class that runs the Map portion
+ * of a MapReduce job). The class is pre-filled with a template.
  * 
  */
 
-public class NewReducerWizard extends NewElementWizard implements
-    INewWizard, IRunnableWithProgress {
+public class NewPartitionerWizard extends NewElementWizard implements INewWizard,
+    IRunnableWithProgress {
   private Page page;
 
-  public NewReducerWizard() {
-    setWindowTitle("New Reducer");
+  public NewPartitionerWizard() {
+    setWindowTitle("New Partitioner");
   }
 
   public void run(IProgressMonitor monitor) {
@@ -77,12 +79,14 @@ public class NewReducerWizard extends NewElementWizard implements
   }
 
   public static class Page extends NewTypeWizardPage {
-    public Page() {
-      super(true, "Reducer");
+    private Button isCreateMapMethod;
 
-      setTitle("Reducer");
-      setDescription("Create a new Reducer implementation.");
-      setImageDescriptor(ImageLibrary.get("wizard.reducer.new"));
+    public Page() {
+      super(true, "Partitioner");
+
+      setTitle("Partitioner");
+      setDescription("Create a new Partitioner implementation.");
+      setImageDescriptor(ImageLibrary.get("wizard.partitioner.new"));
     }
 
     public void setSelection(IStructuredSelection selection) {
@@ -100,19 +104,30 @@ public class NewReducerWizard extends NewElementWizard implements
     protected void createTypeMembers(IType newType, ImportsManager imports,
         IProgressMonitor monitor) throws CoreException {
       super.createTypeMembers(newType, imports, monitor);
-      imports.addImport("java.io.IOException");
-      imports.addImport("org.apache.hadoop.mapreduce.Reducer");
+      imports.addImport("java.util.HashMap");
       imports.addImport("org.apache.hadoop.io.Text");
-      imports.addImport("org.apache.hadoop.io.IntWritable");
+      imports.addImport("org.apache.hadoop.conf.Configurable");
+      imports.addImport("org.apache.hadoop.conf.Configuration");
+      imports.addImport("org.apache.hadoop.mapreduce.Partitioner");
+      
+ 
       newType
-          .createMethod(
-              "public void reduce(Text key, Iterable<IntWritable> values, Context context) throws IOException, InterruptedException \n{\n"
-
-                  + "\twhile (values.iterator().hasNext()) {\n"
-                  + "\t\t// replace ValueType with the real type of your value\n"
-
-                  + "\t\t// process value\n" + "\t}\n" + "}\n", null, false,
-              monitor);
+      .createMethod(
+          "	  @Override\n" +
+	      "   public Configuration getConf() { \n" +
+		  "     // TODO Auto-generated method stub \n" +
+		  "     return null;\n" +
+	      "   }\n\n" +
+	      "	  @Override\n" +
+	      "	  public void setConf(Configuration conf) {\n" +
+	      "	    // TODO Auto-generated method stub\n" +
+	      "	  }\n\n" +
+		  "	  @Override\n" +
+		  "	  public int getPartition(Text key, Text value, int nr) { \n" +
+          "	  // TODO Auto-generated method stub \n" +
+          "	  return 0; \n" +
+		  "	  }\n", null, false,
+          monitor);
     }
 
     public void createControl(Composite parent) {
@@ -134,8 +149,11 @@ public class NewReducerWizard extends NewElementWizard implements
 
       setControl(composite);
 
-      setSuperClass("org.apache.hadoop.mapreduce.Reducer<Text, IntWritable, Text, IntWritable>", true);
- 
+      setSuperClass("org.apache.hadoop.mapreduce.Partitioner<Text, Text>", true);
+      ArrayList al = new ArrayList();
+      al.add("org.apache.hadoop.conf.Configurable");
+      setSuperInterfaces(al, true);
+
       setFocus();
       validate();
     }
@@ -157,8 +175,8 @@ public class NewReducerWizard extends NewElementWizard implements
   public boolean performFinish() {
     if (super.performFinish()) {
       if (getCreatedElement() != null) {
-        selectAndReveal(page.getModifiedResource());
         openResource((IFile) page.getModifiedResource());
+        selectAndReveal(page.getModifiedResource());
       }
 
       return true;
@@ -175,7 +193,7 @@ public class NewReducerWizard extends NewElementWizard implements
 
   @Override
   public IJavaElement getCreatedElement() {
-    return (page.getCreatedType() == null) ? null : page.getCreatedType()
-        .getPrimaryElement();
+    return page.getCreatedType().getPrimaryElement();
   }
+
 }
