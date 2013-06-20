@@ -1,6 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
+    <extension point="org.eclipse.ui.commands">
+      <command id="dfs.browser.action.delete"
+         name="Delete DFS location">
+      </command>
+      <command id="dfs.browser.action.disconnect"
+            name="Disconnect DFS location">
+      </command>
+      <command id="dfs.browser.action.refresh"
+            name="Refresh DFS location">
+      </command>
+      <command id="dfs.browser.action.download"
+            name="Download from DFS">
+      </command>
+   </extension>      
    <extension
          point="org.eclipse.ui.navigator.navigatorContent">
       <navigatorContent
