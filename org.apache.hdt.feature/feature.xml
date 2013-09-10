@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="org.apache.hadoop.eclipse.feature"
-      label="Apache Hadoop Eclipse"
-      version="1.0.0.qualifier">
+      id="org.apache.hdt.feature"
+      label="Hadoop Development Tools"
+      version="0.0.1.qualifier"
+      provider-name="Apache Software Foundation">
 
-   <description url="http://people.apache.org/~srimanth/hadoop-eclipse">
-      Apache Hadoop Eclipse feature provides useful Hadoop capabilities from the Eclipse platform.
+   <description url="http://hdt.incubator.apache.org/">
+      The Apache Hadoop Development Tools extend Eclipse to add support for developing against the Apache Hadoop platform.
    </description>
-
+   
    <copyright url="http://www.apache.org/licenses/LICENSE-2.0">
       Copyright 2013 Srimanth Gunturi
 
@@ -37,32 +38,26 @@ or implied. See the License for the specific language governing
 permissions and limitations under the License.
    </license>
 
-   <url>
-      <update label="Apache Hadoop Eclipse Update Site" url="http://people.apache.org/~srimanth/hadoop-eclipse/update-site"/>
-      <discovery label="Apache Hadoop Eclipse Update Site" url="http://people.apache.org/~srimanth/hadoop-eclipse/update-site/"/>
-      <discovery label="Apache Hadoop Eclipse WebSite" url="http://people.apache.org/~srimanth/hadoop-eclipse"/>
-   </url>
-
    <plugin
-         id="org.apache.hadoop.eclipse"
+         id="org.apache.hdt.hadoop.release"
          download-size="0"
          install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.apache.hadoop.eclipse.release"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
+         version="0.0.1.qualifier"
          fragment="true"
          unpack="false"/>
 
    <plugin
-         id="org.apache.hadoop.eclipse.ui"
+         id="org.apache.hdt.ui"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="0.0.1.qualifier"
+         unpack="false"/>
+         
+   <plugin
+         id="org.apache.hdt.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.1.qualifier"
          unpack="false"/>
 
 </feature>
