@@ -109,10 +109,10 @@ under the License.
 
   <build>
     <plugins>
-     <!--  <plugin>
+     <plugin>
         <groupId>org.apache.rat</groupId>
         <artifactId>apache-rat-plugin</artifactId>
-      </plugin> -->
+      </plugin>
       <plugin>
         <groupId>org.eclipse.tycho</groupId>
         <artifactId>tycho-maven-plugin</artifactId>
