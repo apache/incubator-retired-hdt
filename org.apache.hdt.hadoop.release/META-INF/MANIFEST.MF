@@ -7,8 +7,14 @@ Bundle-Vendor: Apache Hadoop
 Fragment-Host: org.apache.hdt.core
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ClassPath: .,
+ jars/log4j-1.2.15.jar,
+ jars/slf4j-api-1.6.1.jar,
+ jars/slf4j-log4j12-1.6.1.jar,
+ jars/commons-configuration-1.6.jar,
+ jars/commons-lang-2.4.jar,
+ jars/commons-logging-1.1.1.jar,
  jars/hadoop-client-1.1.2.jar,
  jars/hadoop-core-1.1.2.jar,
  jars/hadoop-test-1.1.2.jar,
- jars/hadoop-tools-1.1.2.jar, 
+ jars/hadoop-tools-1.1.2.jar,
  jars/zookeeper-3.4.5.jar

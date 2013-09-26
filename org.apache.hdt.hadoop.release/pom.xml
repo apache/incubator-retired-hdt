@@ -44,6 +44,11 @@ under the License.
             <configuration>
               <artifactItems>
                 <artifactItem>
+                  <groupId>log4j</groupId>
+                  <artifactId>log4j</artifactId>
+                  <overWrite>false</overWrite>
+                </artifactItem>
+                <artifactItem>
                   <groupId>org.apache.hadoop</groupId>
                   <artifactId>hadoop-core</artifactId>
                   <overWrite>false</overWrite>
@@ -67,6 +72,31 @@ under the License.
                   <groupId>org.apache.zookeeper</groupId>
                   <artifactId>zookeeper</artifactId>
                   <overWrite>false</overWrite>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.slf4j</groupId>
+                  <artifactId>slf4j-api</artifactId>
+                  <overWrite>false</overWrite>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.slf4j</groupId>
+                  <artifactId>slf4j-log4j12</artifactId>
+                  <overWrite>false</overWrite>
+                </artifactItem>
+                <artifactItem>
+	              <groupId>commons-configuration</groupId>
+				  <artifactId>commons-configuration</artifactId>
+				  <overWrite>false</overWrite>
+                </artifactItem>
+                <artifactItem>
+	              <groupId>commons-lang</groupId>
+				  <artifactId>commons-lang</artifactId>
+				  <overWrite>false</overWrite>
+                </artifactItem>
+                <artifactItem>
+	              <groupId>commons-logging</groupId>
+				  <artifactId>commons-logging</artifactId>
+				  <overWrite>false</overWrite>
                 </artifactItem>
               </artifactItems>
               <outputDirectory>${basedir}/jars</outputDirectory>

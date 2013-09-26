@@ -1,17 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
 	<name>org.apache.hdt.updateSite</name>
-	<comment></comment>
+	<comment>Update site for Apache HDT. NO_M2ECLIPSE_SUPPORT: Project files created with the maven-eclipse-plugin are not supported in M2Eclipse.</comment>
 	<projects>
+		<project>org.apache.hdt.core</project>
+		<project>org.apache.hdt.feature</project>
+		<project>org.apache.hdt.hadoop.release</project>
+		<project>org.apache.hdt.ui</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
-			<name>org.eclipse.pde.UpdateSiteBuilder</name>
+			<name>org.eclipse.jdt.core.javabuilder</name>
 			<arguments>
 			</arguments>
 		</buildCommand>
 	</buildSpec>
 	<natures>
-		<nature>org.eclipse.pde.UpdateSiteNature</nature>
+		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
 </projectDescription>

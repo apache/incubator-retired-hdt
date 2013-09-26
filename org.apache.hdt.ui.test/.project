@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
 	<name>org.apache.hdt.ui.test</name>
-	<comment></comment>
+	<comment>Eclipse tools for developing against the Hadoop platform. NO_M2ECLIPSE_SUPPORT: Project files created with the maven-eclipse-plugin are not supported in M2Eclipse.</comment>
 	<projects>
+		<project>org.apache.hdt.core</project>
+		<project>org.apache.hdt.ui</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
@@ -22,7 +24,7 @@
 		</buildCommand>
 	</buildSpec>
 	<natures>
-		<nature>org.eclipse.pde.PluginNature</nature>
 		<nature>org.eclipse.jdt.core.javanature</nature>
+		<nature>org.eclipse.pde.PluginNature</nature>
 	</natures>
 </projectDescription>

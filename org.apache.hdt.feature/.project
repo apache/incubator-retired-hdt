@@ -1,10 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
 	<name>org.apache.hdt.feature</name>
-	<comment></comment>
+	<comment>Eclipse tools for developing against the Hadoop platform. NO_M2ECLIPSE_SUPPORT: Project files created with the maven-eclipse-plugin are not supported in M2Eclipse.</comment>
 	<projects>
+		<project>org.apache.hdt.core</project>
+		<project>org.apache.hdt.hadoop.release</project>
+		<project>org.apache.hdt.ui</project>
 	</projects>
 	<buildSpec>
+		<buildCommand>
+			<name>org.eclipse.jdt.core.javabuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
 		<buildCommand>
 			<name>org.eclipse.pde.FeatureBuilder</name>
 			<arguments>
@@ -12,6 +20,7 @@
 		</buildCommand>
 	</buildSpec>
 	<natures>
+		<nature>org.eclipse.jdt.core.javanature</nature>
 		<nature>org.eclipse.pde.FeatureNature</nature>
 	</natures>
 </projectDescription>
