@@ -18,7 +18,7 @@ specific language governing permissions and limitations
 under the License.
 -->
 <site>
-  <feature url="features/oorg.apache.hdt.feature_0.0.1.qualifier.jar" id="org.apache.hdt.feature" version="0.0.1.qualifier">
+  <feature id="org.apache.hdt.feature" version="0.0.0">
     <category name="org.apache.hdt.feature" />
   </feature>
   <category-def name="org.apache.hdt.feature" label="Apache Hadoop Development Tools" />

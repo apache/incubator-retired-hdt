@@ -132,7 +132,6 @@ under the License.
     <module>org.apache.hdt.ui.test</module>
     <module>org.apache.hdt.dist</module>
   </modules>
-
   <build>
     <plugins>
      <plugin>
@@ -151,6 +150,7 @@ under the License.
           <pomDependencies>consider</pomDependencies>
         </configuration>
       </plugin>
+     
     </plugins>
     <pluginManagement>
       <plugins>
@@ -161,6 +161,7 @@ under the License.
           <extensions>true</extensions>
         </plugin>
         <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
           <version>3.0</version>
           <configuration>
@@ -196,15 +197,26 @@ under the License.
           </executions>
         </plugin>
         <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-jar-plugin</artifactId>
-          <version>2.3.1</version>
+          <version>2.4</version>
           <configuration>
             <archive>
               <manifestFile>META-INF/MANIFEST.MF</manifestFile>
             </archive>
           </configuration>
         </plugin>
+          <plugin>
+          <groupId>org.eclipse.tycho</groupId>
+          <artifactId>tycho-versions-plugin</artifactId>
+          <version>${tycho-version}</version>          
+        </plugin>
       </plugins>
     </pluginManagement>
   </build>
+  <scm>
+    <connection>scm:git:https://git-wip-us.apache.org/repos/asf/incubator-hdt.git</connection>
+    <developerConnection>scm:git:https://git-wip-us.apache.org/repos/asf/incubator-hdt.git</developerConnection>
+    <url>https://git-wip-us.apache.org/repos/asf?p=incubator-hdt.git</url>
+  </scm>
 </project>
