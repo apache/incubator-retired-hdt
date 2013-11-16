@@ -319,7 +319,8 @@ public class HDFSFileStore extends FileStore {
 		if (logger.isDebugEnabled())
 			logger.debug("[" + uri + "]: getParent()");
 		try {
-			return new HDFSFileStore(uri.removeLastSegment());
+			HDFSURI hdfsParentUri = uri.removeLastSegment();
+			return hdfsParentUri != null ? new HDFSFileStore(hdfsParentUri) : null;
 		} catch (URISyntaxException e) {
 			logger.log(Level.WARN, e.getMessage(), e);
 		}

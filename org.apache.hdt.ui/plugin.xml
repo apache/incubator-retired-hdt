@@ -403,7 +403,7 @@
          <action
                class="org.apache.hdt.ui.internal.zookeeper.NewZooKeeperServerAction"
                icon="icons/hadoop-zookeeper-new.png"
-               id="org.apache.hdt.ui.action.new.hdfs"
+               id="org.apache.hdt.ui.action.new.zk"
                label="New ZooKeeper Server"
                style="push"
                toolbarPath="new.group"
