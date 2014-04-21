@@ -19,6 +19,8 @@
 <plugin>
    <extension-point id="org.apache.hdt.core.hdfsClient" name="Apache Hadoop HDFS Client" schema="schema/org.apache.hadoop.eclipse.hdfsclient.exsd"/>
    <extension-point id="org.apache.hdt.core.zookeeperClient" name="Apache Hadoop ZooKeeper Client" schema="schema/org.apache.hadoop.eclipse.zookeeperClient.exsd"/>
+   <extension-point id="org.apache.hdt.core.hadoopCluster" name="Apache Hadoop Cluster" schema="schema/org.apache.hadoop.eclipse.hadoopCluster.exsd"/>
+   
    <extension
          id="org.apache.hadoop.hdfs.filesystem"
          name="Apache Hadoop HDFS"
@@ -38,6 +40,16 @@
             fileSystemScheme="hdfs"
             id="org.apache.hadoop.hdfs">
       </repository>
+   </extension>
+    <extension
+         id="org.apache.hdt.mrnature"
+         name="MapReduce Nature"
+         point="org.eclipse.core.resources.natures">
+      <runtime>
+         <run
+               class="org.apache.hdt.core.natures.MapReduceNature">
+         </run>
+      </runtime>
    </extension>
 
 </plugin>

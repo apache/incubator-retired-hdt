@@ -8,11 +8,16 @@ Bundle-Vendor: Apache Hadoop
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.core.resources,
  org.eclipse.ui,
+ org.eclipse.jdt.core,
+ org.eclipse.jdt.ui,
  org.eclipse.ui.ide;bundle-version="3.6.0",
  org.eclipse.team.ui;bundle-version="3.5.100",
  org.eclipse.ui.navigator;bundle-version="3.5.0",
  org.eclipse.ui.navigator.resources;bundle-version="3.4.200",
  org.eclipse.ui.views.properties.tabbed;bundle-version="3.5.100";resolution:=optional,
+ org.eclipse.jdt.debug.ui,
+ org.eclipse.jdt.launching,
+ org.eclipse.debug.ui,
  org.apache.hdt.core
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy

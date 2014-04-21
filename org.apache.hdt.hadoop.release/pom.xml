@@ -27,9 +27,36 @@ under the License.
   <artifactId>org.apache.hdt.hadoop.release</artifactId>
   <packaging>eclipse-plugin</packaging>
   <name>Apache Hadoop Devlopment Tools Assembly</name>
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.hadoop</groupId>
+      <artifactId>hadoop-core</artifactId>
+    </dependency>
+  </dependencies>
   <build>
     <sourceDirectory>src</sourceDirectory>
     <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <version>2.8</version>
+        <executions>
+          <execution>
+            <id>copy-dependencies</id>
+            <phase>initialize</phase>
+            <goals>
+              <goal>copy-dependencies</goal>
+            </goals>
+            <configuration>
+              <excludeScope>system</excludeScope>
+              <outputDirectory>${basedir}/jars</outputDirectory>
+              <overWriteReleases>false</overWriteReleases>
+              <overWriteSnapshots>false</overWriteSnapshots>
+              <overWriteIfNewer>true</overWriteIfNewer>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
@@ -46,11 +73,6 @@ under the License.
                 <artifactItem>
                   <groupId>log4j</groupId>
                   <artifactId>log4j</artifactId>
-                  <overWrite>false</overWrite>
-                </artifactItem>
-                <artifactItem>
-                  <groupId>org.apache.hadoop</groupId>
-                  <artifactId>hadoop-core</artifactId>
                   <overWrite>false</overWrite>
                 </artifactItem>
                 <artifactItem>
@@ -82,21 +104,6 @@ under the License.
                   <groupId>org.slf4j</groupId>
                   <artifactId>slf4j-log4j12</artifactId>
                   <overWrite>false</overWrite>
-                </artifactItem>
-                <artifactItem>
-	              <groupId>commons-configuration</groupId>
-				  <artifactId>commons-configuration</artifactId>
-				  <overWrite>false</overWrite>
-                </artifactItem>
-                <artifactItem>
-	              <groupId>commons-lang</groupId>
-				  <artifactId>commons-lang</artifactId>
-				  <overWrite>false</overWrite>
-                </artifactItem>
-                <artifactItem>
-	              <groupId>commons-logging</groupId>
-				  <artifactId>commons-logging</artifactId>
-				  <overWrite>false</overWrite>
                 </artifactItem>
               </artifactItems>
               <outputDirectory>${basedir}/jars</outputDirectory>

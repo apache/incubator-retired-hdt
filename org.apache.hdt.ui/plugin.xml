@@ -17,6 +17,14 @@
    limitations under the License.
 -->
 <plugin>
+  <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            class="org.apache.hdt.ui.preferences.MapReducePreferencePage"
+            id="org.apache.hdt.ui.preferences.MapReducePreferencePage"
+            name="Hadoop">
+      </page>
+   </extension>
    <extension
          point="org.eclipse.ui.perspectives">
       <perspective
@@ -51,6 +59,14 @@
                relationship="bottom"
                relative="org.eclipse.ui.editorss">
          </view>
+          <view
+                id=" org.apache.hdt.ui.ClusterView"
+                minimized="false"
+                relationship="stack"
+                relative="org.apache.hdt.ui.view.servers">
+         </view>
+         <newWizardShortcut
+               id="org.apache.hdt.ui.wizard.newProjectWizard"/>
          <newWizardShortcut
                id="org.apache.hdt.ui.wizard.newHdfsServer">
          </newWizardShortcut>
@@ -146,6 +162,14 @@
    </extension>
    <extension
          point="org.eclipse.ui.newWizards">
+         <wizard
+            category="org.apache.hdt.ui.newWizards.category"
+            class="org.apache.hdt.ui.internal.mr.NewMapReduceProjectWizard"
+            finalPerspective="org.apache.hdt.ui.perspective"
+            icon="icons/hadoop-logo-16x16.png"
+            id="org.apache.hdt.ui.wizard.newProjectWizard"
+            name="Map/Reduce Project"
+            project="true"/>
       <wizard
             category="org.apache.hdt.ui.newWizards.category"
             class="org.apache.hdt.ui.internal.hdfs.NewHDFSWizard"
@@ -154,10 +178,6 @@
             id="org.apache.hdt.ui.wizard.newHdfsServer"
             name="New HDFS Server">
       </wizard>
-      <category
-            id="org.apache.hdt.ui.newWizards.category"
-            name="Hadoop">
-      </category>
       <wizard
             category="org.apache.hdt.ui.newWizards.category"
             class="org.apache.hdt.ui.internal.zookeeper.NewZooKeeperWizard"
@@ -166,6 +186,36 @@
             id="org.apache.hdt.ui.wizard.newZooKeeperServer"
             name="New ZooKeeper Server">
       </wizard>
+      <wizard category="org.apache.hdt.ui.newWizards.category"
+            class="org.apache.hdt.ui.internal.mr.NewMapperWizard"
+            icon="icons/mapper16.png"
+            id="org.apache.hdt.ui.wizard.NewMapperWizard"
+            name="Mapper"
+            project="false"/>
+      <wizard category="org.apache.hdt.ui.newWizards.category"
+            class="org.apache.hdt.ui.internal.mr.NewReducerWizard"
+            icon="icons/reducer16.png"
+            id="org.apache.hdt.ui.wizard.NewReducerWizard"
+            name="Reducer"
+            project="false"/>
+      <wizard
+            category="org.apache.hdt.ui.newWizards.category"
+            class="org.apache.hdt.ui.internal.mr.NewDriverWizard"
+            icon="icons/driver.png"
+            id="org.apache.hdt.ui.wizard.NewDriverWizard"
+            name="MapReduce Driver"
+            project="false"/>
+      <wizard
+            category="org.apache.hdt.ui.newWizards.category"
+            class="org.apache.hdt.ui.internal.mr.NewPartitionerWizard"
+            icon="icons/Elephant16x16.gif"
+            id="org.apache.hdt.ui.wizard.NewPartitionerWizard"
+            name="Partitioner"
+            project="false"/>
+      <category
+            id="org.apache.hdt.ui.newWizards.category"
+            name="Hadoop">
+      </category>      
    </extension>
    <extension
          point="org.eclipse.ui.popupMenus">
@@ -381,6 +431,10 @@
    </extension>
    <extension
          point="org.eclipse.ui.views">
+       <category
+            id="org.apache.hdt.ui.category"
+            name="Hadoop">
+      </category>  
       <view
             allowMultiple="false"
             category="org.apache.hdt.ui.category"
@@ -390,10 +444,15 @@
             name="Hadoop Servers"
             restorable="true">
       </view>
-      <category
-            id="org.apache.hdt.ui.category"
-            name="Hadoop">
-      </category>
+      <view
+            allowMultiple="false"
+            category="org.apache.hdt.ui.category"
+            class="org.apache.hdt.ui.internal.mr.ClusterView"
+            icon="icons/hadoop-logo-16x16.png"
+            id="org.apache.hdt.ui.ClusterView"
+            name="Hadoop Clusters"
+            restorable="true">
+      </view>
    </extension>
    <extension
          point="org.eclipse.ui.actionSets">
@@ -420,5 +479,32 @@
          </action>
       </actionSet>
    </extension>
-
+    <extension
+         point="org.eclipse.debug.ui.launchShortcuts">
+      <shortcut
+            class="org.apache.hdt.ui.internal.launch.HadoopApplicationLaunchShortcut"
+            icon="icons/elephantblue16x16.gif"
+            id="org.apache.hdt.launch.shortcut"
+            label="Run on Hadoop"
+            modes="run">
+         <contextualLaunch>
+            <contextLabel mode="run" label="Run on Hadoop" />
+            <enablement>
+             <with variable="selection">
+               <count value="1"/>
+               <iterate>
+                <or>
+                  <test property="org.eclipse.jdt.launching.hasMain"/>
+                  <and>
+                     <test property="org.eclipse.jdt.launching.isContainer"/>
+                     <test property="org.eclipse.jdt.launching.hasProjectNature" args="org.eclipse.jdt.core.javanature"/>
+                     <test property="org.eclipse.jdt.launching.hasProjectNature" args="org.apache.hdt.mrature"/>                     
+                  </and>
+                </or>
+               </iterate>
+               </with>
+           </enablement>
+         </contextualLaunch>
+      </shortcut>
+      </extension>
 </plugin>
