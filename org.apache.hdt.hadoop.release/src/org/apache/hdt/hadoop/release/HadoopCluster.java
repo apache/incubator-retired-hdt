@@ -18,7 +18,9 @@
 
 package org.apache.hdt.hadoop.release;
 
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Collection;
@@ -49,6 +51,7 @@ import org.apache.hdt.core.launch.AbstractHadoopCluster;
 import org.apache.hdt.core.launch.IHadoopJob;
 import org.apache.hdt.core.launch.IJarModule;
 import org.apache.hdt.core.launch.IJobListener;
+import org.eclipse.core.internal.utils.FileUtil;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -236,9 +239,7 @@ public class HadoopCluster extends AbstractHadoopCluster {
 	 * @throws ParserConfigurationException
 	 */
 	public HadoopCluster(File file) throws ParserConfigurationException, SAXException, IOException {
-
-		this.conf = new Configuration();
-		this.addPluginConfigDefaultProperties();
+		this();
 		this.loadFromXML(file);
 	}
 
@@ -422,8 +423,8 @@ public class HadoopCluster extends AbstractHadoopCluster {
 	 *            the property value
 	 */
 	public void setConfProp(ConfProp prop, String propValue) {
-		assert propValue != null;
-		conf.set(prop.name, propValue);
+		if (propValue != null)
+			conf.set(prop.name, propValue);
 	}
 
 	/**
@@ -472,8 +473,7 @@ public class HadoopCluster extends AbstractHadoopCluster {
 	 */
 	private void addPluginConfigDefaultProperties() {
 		for (ConfProp prop : ConfProp.values()) {
-			if (conf.get(prop.name) == null)
-				conf.set(prop.name, prop.defVal);
+			conf.set(prop.name, prop.defVal);
 		}
 	}
 
@@ -550,14 +550,19 @@ public class HadoopCluster extends AbstractHadoopCluster {
 		JobConf conf = new JobConf(this.conf);
 		conf.setJar(jarFilePath);
 		// Write it to the disk file
-		File confFile = new File(confDir, "core-site.xml");
-		FileOutputStream fos = new FileOutputStream(confFile);
+		File coreSiteFile = new File(confDir, "core-site.xml");
+		File mapredSiteFile = new File(confDir, "mapred-site.xml");
+		FileOutputStream fos = new FileOutputStream(coreSiteFile);
+		FileInputStream fis = null;
 		try {
 			conf.writeXml(fos);
 			fos.close();
-			fos = null;
+			fos = new FileOutputStream(mapredSiteFile);
+			fis = new FileInputStream(coreSiteFile);
+			IOUtils.copyBytes(new BufferedInputStream(fis), fos, 4096);
 		} finally {
 			IOUtils.closeStream(fos);
+			IOUtils.closeStream(fis);
 		}
 
 	}

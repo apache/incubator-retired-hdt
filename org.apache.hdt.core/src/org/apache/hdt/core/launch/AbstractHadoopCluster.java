@@ -63,7 +63,7 @@ public abstract class AbstractHadoopCluster {
 	abstract public String getState();
 
 	abstract public boolean loadFromXML(File file) throws IOException;
-
+	
 	public static AbstractHadoopCluster createCluster(File file) throws CoreException, IOException {
 		AbstractHadoopCluster hadoopCluster = createCluster();
 		hadoopCluster.loadFromXML(file);
