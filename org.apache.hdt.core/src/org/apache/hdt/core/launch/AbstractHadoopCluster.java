@@ -64,6 +64,8 @@ public abstract class AbstractHadoopCluster {
 
 	abstract public boolean loadFromXML(File file) throws IOException;
 	
+	abstract public boolean isAvailable() throws CoreException;
+	
 	public static AbstractHadoopCluster createCluster(File file) throws CoreException, IOException {
 		AbstractHadoopCluster hadoopCluster = createCluster();
 		hadoopCluster.loadFromXML(file);
@@ -80,5 +82,7 @@ public abstract class AbstractHadoopCluster {
 		hadoopCluster.load(existing);
 		return hadoopCluster;
 	}
+
+	
 
 }

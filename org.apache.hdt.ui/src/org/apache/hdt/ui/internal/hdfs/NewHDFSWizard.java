@@ -17,14 +17,9 @@
  */
 package org.apache.hdt.ui.internal.hdfs;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-
 import org.apache.hdt.core.internal.hdfs.HDFSManager;
 import org.apache.hdt.ui.Activator;
 import org.apache.log4j.Logger;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -73,17 +68,9 @@ public class NewHDFSWizard extends Wizard implements INewWizard {
 
 				Job j = new Job("Creating HDFS project [" + serverLocationWizardPage.getHdfsServerName() + "]") {
 					protected org.eclipse.core.runtime.IStatus run(org.eclipse.core.runtime.IProgressMonitor monitor) {
-						try {
-							HDFSManager.INSTANCE.createServer(serverLocationWizardPage.getHdfsServerName(), new URI(serverLocationWizardPage
-									.getHdfsServerLocation()), serverLocationWizardPage.isOverrideDefaultSecurity() ? serverLocationWizardPage.getUserId()
-									: null, serverLocationWizardPage.isOverrideDefaultSecurity() ? serverLocationWizardPage.getGroupIds() : null);
-						} catch (CoreException e) {
-							logger.warn(e.getMessage(), e);
-							return e.getStatus();
-						} catch (URISyntaxException e) {
-							logger.warn(e.getMessage(), e);
-						}
-						return Status.OK_STATUS;
+						return HDFSManager.addServer(serverLocationWizardPage.getHdfsServerName(),serverLocationWizardPage.getHdfsServerLocation(),
+								serverLocationWizardPage.isOverrideDefaultSecurity() ? serverLocationWizardPage.getUserId() : null,
+								serverLocationWizardPage.isOverrideDefaultSecurity() ? serverLocationWizardPage.getGroupIds() : null);
 					};
 				};
 				j.schedule();
@@ -92,5 +79,7 @@ public class NewHDFSWizard extends Wizard implements INewWizard {
 		}
 		return false;
 	}
+
+	
 
 }

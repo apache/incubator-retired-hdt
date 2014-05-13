@@ -39,31 +39,31 @@
       <perspectiveExtension
             targetID="org.apache.hdt.ui.perspective">
          <view
-               id="org.apache.hdt.ui.view.servers"
+               id="org.eclipse.ui.navigator.ProjectExplorer"
                minimized="false"
                ratio="0.25"
                relationship="left"
                relative="org.eclipse.ui.editorss">
          </view>
          <view
-               id="org.eclipse.ui.navigator.ProjectExplorer"
+               id="org.apache.hdt.ui.view.servers"
                minimized="false"
                ratio="0.5"
                relationship="bottom"
-               relative="org.apache.hdt.ui.view.servers">
+               relative="org.eclipse.ui.navigator.ProjectExplorer">
          </view>
          <view
-               id="org.eclipse.ui.views.PropertySheet"
+               id="org.apache.hdt.ui.ClusterView"
                minimized="false"
                ratio="0.66"
                relationship="bottom"
                relative="org.eclipse.ui.editorss">
          </view>
           <view
-                id=" org.apache.hdt.ui.ClusterView"
+                id="org.eclipse.ui.views.PropertySheet"
                 minimized="false"
                 relationship="stack"
-                relative="org.apache.hdt.ui.view.servers">
+                relative="org.apache.hdt.ui.ClusterView">
          </view>
          <newWizardShortcut
                id="org.apache.hdt.ui.wizard.newProjectWizard"/>
@@ -441,7 +441,7 @@
             class="org.eclipse.ui.navigator.CommonNavigator"
             icon="icons/hadoop-logo-16x16.png"
             id="org.apache.hdt.ui.view.servers"
-            name="Hadoop Servers"
+            name="ZooKeeper Servers"
             restorable="true">
       </view>
       <view

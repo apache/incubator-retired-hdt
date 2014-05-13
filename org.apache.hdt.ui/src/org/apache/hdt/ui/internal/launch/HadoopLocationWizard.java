@@ -28,8 +28,12 @@ import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import org.apache.hdt.core.launch.ConfProp;
+import org.apache.hdt.core.internal.hdfs.HDFSManager;
 import org.apache.hdt.core.launch.AbstractHadoopCluster;
+import org.apache.hdt.core.launch.ConfProp;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.wizard.WizardPage;
@@ -118,17 +122,49 @@ public class HadoopLocationWizard extends WizardPage {
 	public AbstractHadoopCluster performFinish() {
 		try {
 			if (this.original == null) {
+				Display.getDefault().syncExec(new Runnable() {
+					public void run() {
+						HDFSManager.addServer(location.getLocationName(),
+								location.getConfProp(ConfProp.FS_DEFAULT_URI), location
+								.getConfProp(ConfProp.PI_USER_NAME), null);
+					}
+				});
 				// New location
 				Display.getDefault().syncExec(new Runnable() {
 					public void run() {
-						ServerRegistry.getInstance().addServer(HadoopLocationWizard.this.location);
+							ServerRegistry.getInstance().addServer(HadoopLocationWizard.this.location);
 					}
 				});
 				return this.location;
 
 			} else {
+				
 				// Update location
 				final String originalName = this.original.getLocationName();
+				final String originalLoc = this.original.getConfProp(ConfProp.FS_DEFAULT_URI);
+				final String newName = this.location.getLocationName();
+				final String newLoc = this.location.getConfProp(ConfProp.FS_DEFAULT_URI);
+				
+				if (!originalName.equals(newName) || !originalLoc.equals(newLoc)){
+					IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+					final IProject project = root.getProject(originalName);
+					
+					Display.getDefault().syncExec(new Runnable() {
+						public void run() {
+							if(project.exists()){
+								try {
+									project.close(null);
+									project.delete(true, null);
+								} catch (CoreException e) {
+									e.printStackTrace();
+								}
+							}
+							HDFSManager.addServer(location.getLocationName(),
+									location.getConfProp(ConfProp.FS_DEFAULT_URI), location
+									.getConfProp(ConfProp.PI_USER_NAME), null);
+						}
+					});
+				}
 				this.original.load(this.location);
 
 				Display.getDefault().syncExec(new Runnable() {
@@ -139,6 +175,9 @@ public class HadoopLocationWizard extends WizardPage {
 				return this.original;
 
 			}
+			
+			
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 			setMessage("Invalid server location values", IMessageProvider.ERROR);

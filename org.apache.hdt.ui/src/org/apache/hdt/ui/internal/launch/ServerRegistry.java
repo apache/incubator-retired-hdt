@@ -33,6 +33,12 @@ import javax.security.auth.login.Configuration;
 import org.apache.hdt.core.launch.AbstractHadoopCluster;
 import org.apache.hdt.core.launch.IHadoopClusterListener;
 import org.apache.hdt.ui.Activator;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.resources.WorkspaceJob;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 
 /**
@@ -173,10 +179,22 @@ public class ServerRegistry {
 		fireListeners(server, SERVER_REMOVED);
 	}
 
-	public synchronized void addServer(AbstractHadoopCluster server) {
-		this.servers.put(server.getLocationName(), server);
-		store();
-		fireListeners(server, SERVER_ADDED);
+	public synchronized void addServer(final AbstractHadoopCluster server) {
+		WorkspaceJob job= new WorkspaceJob("Adding Hadoop Server") {
+			@Override
+			public IStatus runInWorkspace(IProgressMonitor monitor) throws CoreException {
+				if(server.isAvailable()){
+					servers.put(server.getLocationName(), server);
+					store();
+					fireListeners(server, SERVER_ADDED);
+				}
+			return org.eclipse.core.runtime.Status.OK_STATUS;
+		}};
+		
+		job.setPriority(Job.LONG);
+		job.setRule(ResourcesPlugin.getWorkspace().getRoot());
+		job.setUser(true);
+		job.schedule();
 	}
 
 	/**
@@ -187,14 +205,23 @@ public class ServerRegistry {
 	 * @param server
 	 *            the location
 	 */
-	public synchronized void updateServer(String originalName, AbstractHadoopCluster server) {
-
-		// Update the map if the location name has changed
-		if (!server.getLocationName().equals(originalName)) {
-			servers.remove(originalName);
-			servers.put(server.getLocationName(), server);
-		}
-		store();
-		fireListeners(server, SERVER_STATE_CHANGED);
+	public synchronized void updateServer(final String originalName, final AbstractHadoopCluster server) {
+		WorkspaceJob job= new WorkspaceJob("Updating  Hadoop Server") {
+			@Override
+			public IStatus runInWorkspace(IProgressMonitor monitor) throws CoreException {
+				// Update the map if the location name has changed
+				if (!server.getLocationName().equals(originalName) && server.isAvailable()) {
+					servers.remove(originalName);
+					servers.put(server.getLocationName(), server);
+					store();
+					fireListeners(server, SERVER_STATE_CHANGED);
+				}
+				
+				return org.eclipse.core.runtime.Status.OK_STATUS;
+			}};
+		
+		job.setPriority(Job.LONG);
+		job.setUser(true);
+		job.schedule();
 	}
 }

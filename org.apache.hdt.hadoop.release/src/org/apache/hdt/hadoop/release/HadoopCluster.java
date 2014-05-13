@@ -31,6 +31,13 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -52,6 +59,8 @@ import org.apache.hdt.core.launch.IHadoopJob;
 import org.apache.hdt.core.launch.IJarModule;
 import org.apache.hdt.core.launch.IJobListener;
 import org.eclipse.core.internal.utils.FileUtil;
+import org.eclipse.core.resources.WorkspaceJob;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -81,6 +90,7 @@ import org.xml.sax.SAXException;
  */
 
 public class HadoopCluster extends AbstractHadoopCluster {
+	private ExecutorService service= Executors.newSingleThreadExecutor();
 
 	/**
 	 * Frequency of location status observations expressed as the delay in ms
@@ -565,5 +575,28 @@ public class HadoopCluster extends AbstractHadoopCluster {
 			IOUtils.closeStream(fis);
 		}
 
+	}
+
+	/* (non-Javadoc)
+	 * @see org.apache.hdt.core.launch.AbstractHadoopCluster#isAvailable()
+	 */
+	@Override
+	public boolean isAvailable() throws CoreException {
+		Callable<JobClient> task= new Callable<JobClient>() {
+			
+			@Override
+			public JobClient call() throws Exception {
+				return getJobClient();
+			}
+		}; 
+		Future<JobClient> jobClientFuture = service.submit(task);
+		try{
+			JobClient jobClient = jobClientFuture.get(5, TimeUnit.SECONDS);
+			return jobClient!=null;
+		}catch(Exception e){
+			e.printStackTrace();
+			throw new CoreException(new Status(Status.ERROR, 
+					Activator.BUNDLE_ID, "unable to connect to server", e));
+		}
 	}
 }
