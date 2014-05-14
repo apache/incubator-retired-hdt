@@ -176,45 +176,9 @@ public class ClusterView extends ViewPart implements ITreeContentProvider, ITabl
 		getViewSite().getActionBars().setGlobalActionHandler(ActionFactory.DELETE.getId(), deleteAction);
 		getViewSite().getActionBars().getToolBarManager().add(editServerAction);
 		getViewSite().getActionBars().getToolBarManager().add(newLocationAction);
-
-		createActions();
 		createContextMenu();
 	}
 
-	/**
-	 * Actions
-	 */
-	private void createActions() {
-		/*
-		 * addItemAction = new Action("Add...") { public void run() { addItem();
-		 * } }; addItemAction.setImageDescriptor(ImageLibrary
-		 * .get("server.view.location.new"));
-		 */
-		/*
-		 * deleteItemAction = new Action("Delete") { public void run() {
-		 * deleteItem(); } };
-		 * deleteItemAction.setImageDescriptor(getImageDescriptor
-		 * ("delete.gif"));
-		 * 
-		 * selectAllAction = new Action("Select All") { public void run() {
-		 * selectAll(); } };
-		 */
-		// Add selection listener.
-		viewer.addSelectionChangedListener(new ISelectionChangedListener() {
-			public void selectionChanged(SelectionChangedEvent event) {
-				updateActionEnablement();
-			}
-		});
-	}
-
-	private void addItem() {
-		System.out.printf("ADD ITEM\n");
-	}
-
-	private void updateActionEnablement() {
-		IStructuredSelection sel = (IStructuredSelection) viewer.getSelection();
-		// deleteItemAction.setEnabled(sel.size() > 0);
-	}
 
 	/**
 	 * Contextual menu
@@ -238,14 +202,15 @@ public class ClusterView extends ViewPart implements ITreeContentProvider, ITabl
 	}
 
 	private void fillContextMenu(IMenuManager mgr) {
-		mgr.add(newLocationAction);
-		mgr.add(editServerAction);
-		mgr.add(deleteAction);
-		/*
-		 * mgr.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
-		 * mgr.add(deleteItemAction); mgr.add(new Separator());
-		 * mgr.add(selectAllAction);
-		 */
+		IStructuredSelection sel = (IStructuredSelection) viewer.getSelection();
+		Object firstElement = sel.getFirstElement();
+		if(firstElement instanceof IHadoopJob){
+			mgr.add(deleteAction);
+		}else{
+			mgr.add(newLocationAction);
+			mgr.add(editServerAction);
+			mgr.add(deleteAction);
+		}
 	}
 
 	/* @inheritDoc */
