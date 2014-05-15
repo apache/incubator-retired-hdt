@@ -19,18 +19,26 @@ package org.apache.hdt.ui.internal.zookeeper;
 
 import org.apache.hdt.core.internal.zookeeper.ZooKeeperManager;
 import org.apache.hdt.ui.Activator;
+import org.apache.hdt.ui.internal.launch.HadoopLocationWizard;
+import org.apache.hdt.ui.internal.launch.ServerRegistry;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExecutableExtension;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.wizards.newresource.BasicNewProjectResourceWizard;
 
-public class NewZooKeeperWizard extends Wizard implements INewWizard {
+public class NewZooKeeperWizard extends Wizard implements INewWizard,IExecutableExtension {
 
 	//private static Logger logger = Logger.getLogger(NewZooKeeperWizard.class);
 	private NewZooKeeperServerWizardPage serverLocationWizardPage = null;
+	private IConfigurationElement configElement;
 
 	public NewZooKeeperWizard() {
 	}
@@ -55,6 +63,11 @@ public class NewZooKeeperWizard extends Wizard implements INewWizard {
 
 	@Override
 	public boolean performFinish() {
+		Display.getDefault().syncExec(new Runnable() {
+			public void run() {
+				BasicNewProjectResourceWizard.updatePerspective(configElement);
+			}
+		});
 		if (serverLocationWizardPage != null) {
 			String ambariUrl = serverLocationWizardPage.getZkServerLocation();
 			if (ambariUrl != null) {
@@ -76,6 +89,15 @@ public class NewZooKeeperWizard extends Wizard implements INewWizard {
 			}
 		}
 		return false;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.core.runtime.IExecutableExtension#setInitializationData
+	 * (org.eclipse.core.runtime.IConfigurationElement, java.lang.String, java.lang.Object)
+	 */
+	@Override
+	public void setInitializationData(IConfigurationElement config, String propertyName, Object data) throws CoreException {
+		this.configElement=config;
 	}
 
 }

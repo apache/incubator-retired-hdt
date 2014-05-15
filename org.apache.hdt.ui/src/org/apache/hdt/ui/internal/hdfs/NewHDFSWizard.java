@@ -20,17 +20,23 @@ package org.apache.hdt.ui.internal.hdfs;
 import org.apache.hdt.core.internal.hdfs.HDFSManager;
 import org.apache.hdt.ui.Activator;
 import org.apache.log4j.Logger;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExecutableExtension;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.wizards.newresource.BasicNewProjectResourceWizard;
 
-public class NewHDFSWizard extends Wizard implements INewWizard {
+public class NewHDFSWizard extends Wizard implements INewWizard,IExecutableExtension {
 
 	private static Logger logger = Logger.getLogger(NewHDFSWizard.class);
 	private NewHDFSServerWizardPage serverLocationWizardPage = null;
+	private IConfigurationElement configElement;
 
 	public NewHDFSWizard() {
 		// TODO Auto-generated constructor stub
@@ -56,6 +62,11 @@ public class NewHDFSWizard extends Wizard implements INewWizard {
 
 	@Override
 	public boolean performFinish() {
+		Display.getDefault().syncExec(new Runnable() {
+			public void run() {
+				BasicNewProjectResourceWizard.updatePerspective(configElement);
+			}
+		});
 		if (serverLocationWizardPage != null) {
 			String ambariUrl = serverLocationWizardPage.getHdfsServerLocation();
 			if (ambariUrl != null) {
@@ -79,7 +90,14 @@ public class NewHDFSWizard extends Wizard implements INewWizard {
 		}
 		return false;
 	}
-
+	/* (non-Javadoc)
+	 * @see org.eclipse.core.runtime.IExecutableExtension#setInitializationData
+	 * (org.eclipse.core.runtime.IConfigurationElement, java.lang.String, java.lang.Object)
+	 */
+	@Override
+	public void setInitializationData(IConfigurationElement config, String propertyName, Object data) throws CoreException {
+		this.configElement=config;
+	}
 	
 
 }
