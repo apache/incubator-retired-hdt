@@ -24,8 +24,10 @@ import org.apache.hdt.ui.internal.launch.ServerRegistry;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExecutableExtension;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
@@ -80,7 +82,15 @@ public class NewZooKeeperWizard extends Wizard implements INewWizard,IExecutable
 
 				Job j = new Job("Creating ZooKeeper project [" + serverLocationWizardPage.getZkServerName() + "]") {
 					protected org.eclipse.core.runtime.IStatus run(org.eclipse.core.runtime.IProgressMonitor monitor) {
-						ZooKeeperManager.INSTANCE.createServer(serverLocationWizardPage.getZkServerName(), serverLocationWizardPage.getZkServerLocation());
+						try {
+							ZooKeeperManager.INSTANCE.createServer(serverLocationWizardPage.getZkServerName(), serverLocationWizardPage.getZkServerLocation());
+						} catch (final CoreException e) {
+							Display.getDefault().syncExec(new Runnable(){
+								public void run(){
+								IStatus status = e.getStatus();
+								MessageDialog.openError(Display.getDefault().getActiveShell(), 
+									"ZooKeeper Error", status.getMessage()+" "+status.getException().getMessage());}});
+						}
 						return Status.OK_STATUS;
 					};
 				};

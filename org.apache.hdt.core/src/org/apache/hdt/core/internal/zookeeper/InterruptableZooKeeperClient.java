@@ -93,7 +93,10 @@ public class InterruptableZooKeeperClient extends ZooKeeperClient {
 			// Tell HDFS manager that the server timed out
 			if (logger.isDebugEnabled())
 				logger.debug("executeWithTimeout(): Server timed out: " + server);
-			ZooKeeperManager.INSTANCE.disconnect(server);
+			try {
+			  ZooKeeperManager.INSTANCE.disconnect(server);
+			} catch (Throwable t) {
+			}
 			throw new InterruptedException();
 		}
 		if (data.size() > 0)

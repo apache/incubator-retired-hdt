@@ -24,9 +24,13 @@ import org.apache.hdt.core.internal.model.ServerStatus;
 import org.apache.hdt.core.internal.model.ZooKeeperServer;
 import org.apache.hdt.core.internal.zookeeper.ZooKeeperManager;
 import org.apache.log4j.Logger;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.navigator.resources.ProjectExplorer;
@@ -37,6 +41,10 @@ public class ReconnectAction implements IObjectActionDelegate {
 	private ISelection selection;
 	private IWorkbenchPart targetPart;
 
+	private void showError(String message) {
+		MessageDialog.openError(Display.getDefault().getActiveShell(), 
+				"ZooKeeper Re-connect Error", message);
+	}
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -44,26 +52,34 @@ public class ReconnectAction implements IObjectActionDelegate {
 	 */
 	@Override
 	public void run(IAction action) {
-		if (this.selection != null && !this.selection.isEmpty()) {
-			IStructuredSelection sSelection = (IStructuredSelection) this.selection;
-			@SuppressWarnings("rawtypes")
-			Iterator itr = sSelection.iterator();
-			while (itr.hasNext()) {
-				Object object = itr.next();
-				if (object instanceof ZooKeeperServer) {
-					ZooKeeperServer r = (ZooKeeperServer) object;
-					if(logger.isDebugEnabled())
-						logger.debug("Reconnecting: "+r);
-					ZooKeeperManager.INSTANCE.reconnect(r);
-					if(logger.isDebugEnabled())
-						logger.debug("Reconnected: "+r);
-					if (targetPart instanceof ProjectExplorer) {
-						ProjectExplorer pe = (ProjectExplorer) targetPart;
-						pe.getCommonViewer().refresh(r, true);
+		Display.getDefault().syncExec(new Runnable() {
+			@Override
+			public void run() {
+			if (selection != null && !selection.isEmpty()) {
+				IStructuredSelection sSelection = (IStructuredSelection) selection;
+				@SuppressWarnings("rawtypes")
+				Iterator itr = sSelection.iterator();
+				while (itr.hasNext()) {
+					Object object = itr.next();
+					if (object instanceof ZooKeeperServer) {
+						ZooKeeperServer r = (ZooKeeperServer) object;
+						if(logger.isDebugEnabled())
+							logger.debug("Reconnecting: "+r);
+						try {
+							ZooKeeperManager.INSTANCE.reconnect(r);
+						} catch (CoreException e) {
+							logger.error("Error occurred ", e);
+							IStatus status = e.getStatus();
+							showError(status.getException().getMessage());
+						}
+						if(logger.isDebugEnabled())
+							logger.debug("Reconnected: "+r);
+						if (targetPart instanceof ProjectExplorer) {
+							ProjectExplorer pe = (ProjectExplorer) targetPart;
+							pe.getCommonViewer().refresh(r, true);
+						}
 					}
-				}
-			}
-		}
+				}}}});
 	}
 
 	/*

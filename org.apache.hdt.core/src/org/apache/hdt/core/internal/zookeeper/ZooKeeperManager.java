@@ -35,6 +35,8 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.widgets.Display;
 
 /**
  * @author Srimanth Gunturi
@@ -62,11 +64,20 @@ public class ZooKeeperManager {
 	/**
 	 * @param zkServerName
 	 * @param uri
+	 * @throws CoreException 
+	 * @throws InterruptedException 
+	 * @throws IOException 
 	 */
-	public ZooKeeperServer createServer(String zkServerName, String zkServerLocation) {
+	public ZooKeeperServer createServer(String zkServerName, String zkServerLocation) throws  CoreException {
 		ZooKeeperServer zkServer = HadoopFactory.eINSTANCE.createZooKeeperServer();
 		zkServer.setName(zkServerName);
 		zkServer.setUri(zkServerLocation);
+		try {
+			ZooKeeperManager.INSTANCE.getClient(zkServer).connect();
+		} catch (Exception e) {
+			logger.error("Error getting children of node", e);
+			throw new CoreException(new Status(Status.ERROR, Activator.BUNDLE_ID, "Error in creating server",e));
+		}
 		getServers().add(zkServer);
 		HadoopManager.INSTANCE.saveServers();
 		return zkServer;
@@ -74,22 +85,18 @@ public class ZooKeeperManager {
 
 	/**
 	 * @param r
+	 * @throws CoreException 
 	 */
-	public void disconnect(ZooKeeperServer server) {
+	public void disconnect(ZooKeeperServer server) throws CoreException {
 		try {
 			if (ServerStatus.DISCONNECTED_VALUE != server.getStatusCode()) {
 				getClient(server).disconnect();
 				server.setStatusCode(ServerStatus.DISCONNECTED_VALUE);
 			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (CoreException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (Exception e) {
+			logger.error("Error in disconnet", e);
+			throw new CoreException(new Status(IStatus.ERROR, Activator.BUNDLE_ID,
+					"Unable to disconnect.",e));
 		}
 	}
 
@@ -97,8 +104,9 @@ public class ZooKeeperManager {
 	 * Provides a ZooKeeper instance using plugin extensions.
 	 * 
 	 * @param r
+	 * @throws CoreException 
 	 */
-	public void reconnect(ZooKeeperServer server) {
+	public void reconnect(ZooKeeperServer server) throws CoreException {
 		try {
 			if (logger.isDebugEnabled())
 				logger.debug("reconnect(): Reconnecting: " + server);
@@ -111,18 +119,11 @@ public class ZooKeeperManager {
 			}
 			if (logger.isDebugEnabled())
 				logger.debug("reconnect(): Reconnected: " + server);
-		} catch (IOException e) {
+		} catch (Exception e) {
 			server.setStatusCode(ServerStatus.DISCONNECTED_VALUE);
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			server.setStatusCode(ServerStatus.DISCONNECTED_VALUE);
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (CoreException e) {
-			server.setStatusCode(ServerStatus.DISCONNECTED_VALUE);
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error("Error in disconnet", e);
+			throw new CoreException(new Status(IStatus.ERROR, Activator.BUNDLE_ID,
+					"Unable to reconnect.",e));
 		}
 	}
 

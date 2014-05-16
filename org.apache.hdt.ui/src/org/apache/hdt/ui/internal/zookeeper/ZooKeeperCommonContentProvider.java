@@ -32,6 +32,7 @@ import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.ecore.util.EContentAdapter;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IMemento;
@@ -91,12 +92,11 @@ public class ZooKeeperCommonContentProvider implements ICommonContentProvider {
 				ZooKeeperClient client = ZooKeeperManager.INSTANCE.getClient(zkn.getServer());
 				List<ZNode> zkChildren = client.getChildren(zkn);
 				return zkChildren.toArray();
-			} catch (CoreException e) {
+			} catch (Exception e) {
 				logger.error("Error getting children of node", e);
-			} catch (IOException e) {
-				logger.error("Error getting children of node", e);
-			} catch (InterruptedException e) {
-				logger.error("Error getting children of node", e);
+				MessageDialog.openError(Display.getDefault().getActiveShell(), 
+						"ZooKeeper Error",e.getMessage());
+			
 			}
 		}
 		return null;
