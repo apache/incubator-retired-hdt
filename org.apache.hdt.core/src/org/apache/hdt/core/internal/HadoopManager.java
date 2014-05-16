@@ -53,7 +53,8 @@ public class HadoopManager {
 			loadServers();
 			if (servers == null) {
 				Bundle bundle = Platform.getBundle(Activator.BUNDLE_ID);
-				File serversFile = bundle.getBundleContext().getDataFile(MODEL_FILE_NAME);
+				File stateLocation = Platform.getStateLocation(bundle).toFile();
+				File serversFile = new File(stateLocation,MODEL_FILE_NAME);
 				Resource resource = new ResourceSetImpl().createResource(URI.createFileURI(serversFile.getPath()));
 				servers = HadoopFactory.eINSTANCE.createServers();
 				resource.getContents().add(servers);
@@ -64,7 +65,8 @@ public class HadoopManager {
 
 	private void loadServers() {
 		Bundle bundle = Platform.getBundle(Activator.BUNDLE_ID);
-		File serversFile = bundle.getBundleContext().getDataFile(MODEL_FILE_NAME);
+		File stateLocation = Platform.getStateLocation(bundle).toFile();
+		File serversFile = new File(stateLocation,MODEL_FILE_NAME);
 		if (serversFile.exists()) {
 			Resource resource = new ResourceSetImpl().getResource(URI.createFileURI(serversFile.getPath()), true);
 			servers = (Servers) resource.getContents().get(0);
