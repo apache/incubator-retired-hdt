@@ -81,7 +81,8 @@ public class NewHDFSWizard extends Wizard implements INewWizard,IExecutableExten
 					protected org.eclipse.core.runtime.IStatus run(org.eclipse.core.runtime.IProgressMonitor monitor) {
 						return HDFSManager.addServer(serverLocationWizardPage.getHdfsServerName(),serverLocationWizardPage.getHdfsServerLocation(),
 								serverLocationWizardPage.isOverrideDefaultSecurity() ? serverLocationWizardPage.getUserId() : null,
-								serverLocationWizardPage.isOverrideDefaultSecurity() ? serverLocationWizardPage.getGroupIds() : null);
+								serverLocationWizardPage.isOverrideDefaultSecurity() ? serverLocationWizardPage.getGroupIds() : null,
+										serverLocationWizardPage.getHDFSVersion());
 					};
 				};
 				j.schedule();

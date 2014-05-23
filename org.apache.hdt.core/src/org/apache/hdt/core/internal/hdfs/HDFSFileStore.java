@@ -115,7 +115,7 @@ public class HDFSFileStore extends FileStore {
 	 * @throws CoreException
 	 */
 	private HDFSClient getClient() throws CoreException {
-		return HDFSManager.INSTANCE.getClient(getServer().getUri());
+		return HDFSManager.INSTANCE.getClient(getServer().getUri(),getServer().getVersion());
 	}
 
 	/**

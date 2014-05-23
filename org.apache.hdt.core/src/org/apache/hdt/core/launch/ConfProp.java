@@ -26,6 +26,11 @@ public enum ConfProp {
 	 * Property name for the Hadoop location name
 	 */
 	PI_LOCATION_NAME(true, "location.name", "New Hadoop location"),
+	
+	/**
+	 * Property name for the Hadoop Version
+	 */
+	PI_HADOOP_VERSION(true, "hadoop.version", "1.1"),
 
 	/**
 	 * Property name for the master host name (the Job tracker)
@@ -116,8 +121,7 @@ public enum ConfProp {
 	public static ConfProp getByName(String propName) {
 		return map.get(propName);
 	}
-
-	public final String name;
+	protected  final String name;
 
 	public final String defVal;
 

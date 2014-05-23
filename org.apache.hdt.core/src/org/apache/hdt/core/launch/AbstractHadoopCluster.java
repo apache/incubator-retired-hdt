@@ -24,11 +24,17 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
+import org.apache.hdt.core.Activator;
+import org.apache.hdt.core.internal.HadoopManager;
+import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.Status;
 
 public abstract class AbstractHadoopCluster {
+	
+	private static final Logger logger = Logger.getLogger(AbstractHadoopCluster.class);
 
 	abstract public String getLocationName();
 
@@ -44,14 +50,14 @@ public abstract class AbstractHadoopCluster {
 
 	abstract public void load(AbstractHadoopCluster server);
 
-	abstract public String getConfProp(String propName);
+	abstract public String getConfPropValue(String propName);
 
-	abstract public String getConfProp(ConfProp prop);
+	abstract public String getConfPropValue(ConfProp prop);
 
-	abstract public void setConfProp(ConfProp prop, String propValue);
+	abstract public void setConfPropValue(ConfProp prop, String propValue);
 
-	abstract public void setConfProp(String propName, String propValue);
-
+	abstract public void setConfPropValue(String propName, String propValue);
+	
 	abstract public Iterator<Entry<String, String>> getConfiguration();
 
 	abstract public void purgeJob(IHadoopJob job);
@@ -66,23 +72,42 @@ public abstract class AbstractHadoopCluster {
 	
 	abstract public boolean isAvailable() throws CoreException;
 	
+	abstract public String getVersion();
+	
 	public static AbstractHadoopCluster createCluster(File file) throws CoreException, IOException {
-		AbstractHadoopCluster hadoopCluster = createCluster();
+		AbstractHadoopCluster hadoopCluster = createCluster(ConfProp.PI_HADOOP_VERSION.defVal);
 		hadoopCluster.loadFromXML(file);
 		return hadoopCluster;
 	}
 
-	public static AbstractHadoopCluster createCluster() throws CoreException {
+	public static AbstractHadoopCluster createCluster(String hadoopVersion) throws CoreException {
+		logger.debug("Creating client for version "+hadoopVersion); 
 		IConfigurationElement[] elementsFor = Platform.getExtensionRegistry().getConfigurationElementsFor("org.apache.hdt.core.hadoopCluster");
-		return (AbstractHadoopCluster) elementsFor[0].createExecutableExtension("class");
+		for (IConfigurationElement configElement : elementsFor) {
+			String version = configElement.getAttribute("protocolVersion");
+			if(version.equalsIgnoreCase(hadoopVersion)){
+				return (AbstractHadoopCluster)configElement.createExecutableExtension("class");
+			}
+		}
+		throw new CoreException(new Status(Status.ERROR,Activator.BUNDLE_ID,"No clinet found for hadoop version "+hadoopVersion));
 	}
 
 	public static AbstractHadoopCluster createCluster(AbstractHadoopCluster existing) throws CoreException {
-		AbstractHadoopCluster hadoopCluster = createCluster();
+		AbstractHadoopCluster hadoopCluster = createCluster(existing.getVersion());
 		hadoopCluster.load(existing);
 		return hadoopCluster;
 	}
 
+	/**
+	 * @param propName
+	 * @return
+	 */
+	public ConfProp getConfPropForName(String propName) {
+		return ConfProp.getByName(propName);
+	}
 	
+	public String getConfPropName(ConfProp prop) {
+		return prop.name;
+	}
 
 }

@@ -150,7 +150,7 @@ public class HDFSManager {
 	 * @return
 	 * @throws CoreException
 	 */
-	public HDFSServer createServer(String name, java.net.URI hdfsURI, String userId, List<String> groupIds) throws CoreException {
+	public HDFSServer createServer(String name, java.net.URI hdfsURI, String userId, List<String> groupIds,String version) throws CoreException {
 		if (hdfsURI.getPath() == null || hdfsURI.getPath().length() < 1) {
 			try {
 				hdfsURI = new java.net.URI(hdfsURI.toString() + "/");
@@ -163,6 +163,7 @@ public class HDFSManager {
 		hdfsServer.setName(name);
 		hdfsServer.setUri(hdfsURI.toString());
 		hdfsServer.setLoaded(true);
+		hdfsServer.setVersion(version);
 		if (userId != null)
 			hdfsServer.setUserId(userId);
 		if (groupIds != null)
@@ -289,7 +290,7 @@ public class HDFSManager {
 	 * @return
 	 * @throws CoreException
 	 */
-	public HDFSClient getClient(String serverURI) throws CoreException {
+	public HDFSClient getClient(String serverURI,String hdfsVersion) throws CoreException {
 		if (logger.isDebugEnabled())
 			logger.debug("getClient(" + serverURI + "): Server=" + serverURI);
 		HDFSServer server = getServer(serverURI);
@@ -306,8 +307,11 @@ public class HDFSManager {
 				IConfigurationElement[] elementsFor = Platform.getExtensionRegistry().getConfigurationElementsFor("org.apache.hdt.core.hdfsClient");
 				for (IConfigurationElement element : elementsFor) {
 					if (sUri.getScheme().equals(element.getAttribute("protocol"))) {
-						HDFSClient client = (HDFSClient) element.createExecutableExtension("class");
-						hdfsClientsMap.put(serverURI, new InterruptableHDFSClient(serverURI, client));
+						String version = element.getAttribute("protocolVersion");
+						if(hdfsVersion.equalsIgnoreCase(version)){
+							HDFSClient client = (HDFSClient) element.createExecutableExtension("class");
+							hdfsClientsMap.put(serverURI, new InterruptableHDFSClient(serverURI, client));						
+						}
 					}
 				}
 			} catch (URISyntaxException e) {
@@ -317,9 +321,10 @@ public class HDFSManager {
 		}
 	}
 	
-	public static org.eclipse.core.runtime.IStatus addServer(String serverName, String location, String userId, List<String> groupId) {
+	public static org.eclipse.core.runtime.IStatus addServer(String serverName, String location,
+			String userId, List<String> groupId,String version) {
 		try {
-			HDFSManager.INSTANCE.createServer(serverName, new URI(location), userId, groupId);
+			HDFSManager.INSTANCE.createServer(serverName, new URI(location), userId, groupId,version);
 		} catch (CoreException e) {
 			logger.warn(e.getMessage(), e);
 			return e.getStatus();

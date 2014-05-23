@@ -111,7 +111,7 @@ public class HDFSLightweightLabelDecorator implements ILightweightLabelDecorator
 							String userId = server.getUserId();
 							if (userId == null) {
 								try {
-									userId = hdfsManager.getClient(serverUrl).getDefaultUserAndGroupIds().get(0);
+									userId = hdfsManager.getClient(serverUrl,server.getVersion()).getDefaultUserAndGroupIds().get(0);
 								} catch (Throwable e) {
 									userId = null;
 								}

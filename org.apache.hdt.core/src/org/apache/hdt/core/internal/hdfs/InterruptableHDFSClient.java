@@ -28,7 +28,6 @@ import java.util.List;
 import org.apache.hdt.core.hdfs.HDFSClient;
 import org.apache.hdt.core.hdfs.ResourceInformation;
 import org.apache.hdt.core.internal.model.HDFSServer;
-import org.apache.hdt.core.internal.model.ServerStatus;
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -41,9 +40,6 @@ import org.eclipse.core.resources.ResourcesPlugin;
 public class InterruptableHDFSClient extends HDFSClient {
 	private static final int DEFAULT_TIMEOUT = 5000;
 	private static final Logger logger = Logger.getLogger(InterruptableHDFSClient.class);
-	// private static ExecutorService threadPool =
-	// Executors.newFixedThreadPool(10);
-
 	private final HDFSClient client;
 	private final int timeoutMillis = DEFAULT_TIMEOUT;
 	private final String serverURI;
@@ -67,12 +63,17 @@ public class InterruptableHDFSClient extends HDFSClient {
 		final InterruptedException[] inE = new InterruptedException[1];
 		Thread runnerThread = new Thread(new Runnable() {
 			public void run() {
+     		   Thread current = Thread.currentThread();
+	      	   ClassLoader oldLoader = current.getContextClassLoader();
 				try {
+					current.setContextClassLoader(client.getClass().getClassLoader());
 					data.add(runnable.run());
 				} catch (IOException e) {
 					ioE[0] = e;
 				} catch (InterruptedException e) {
 					inE[0] = e;
+				}finally {
+				      current.setContextClassLoader(oldLoader);
 				}
 			}
 		});

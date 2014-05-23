@@ -16,7 +16,7 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: Apache Hadoop
 Bundle-ClassPath: .,
  jars/log4j-1.2.15.jar
-Export-Package:  org.apache.hdt.core,
+Export-Package: org.apache.hdt.core,
  org.apache.hdt.core.hdfs,
  org.apache.hdt.core.internal,
  org.apache.hdt.core.internal.hdfs;x-friends:="org.apache.hdt.ui",
@@ -45,9 +45,6 @@ Export-Package:  org.apache.hdt.core,
  org.apache.log4j.or.sax,
  org.apache.log4j.spi,
  org.apache.log4j.varia,
- org.apache.log4j.xml,
- org.apache.hadoop,
- org.apache.hadoop.conf,
- org.apache.hadoop.io,
- org.apache.hadoop.mapred
+ org.apache.log4j.xml
 Bundle-ActivationPolicy: lazy
+

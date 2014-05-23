@@ -127,6 +127,7 @@ under the License.
     <module>org.apache.hdt.core</module>
     <module>org.apache.hdt.ui</module>
     <module>org.apache.hdt.hadoop.release</module>
+    <module>org.apache.hdt.hadoop2.release</module>
     <module>org.apache.hdt.feature</module>
     <module>org.apache.hdt.updateSite</module>
     <module>org.apache.hdt.ui.test</module>

@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.hdt.hadoop.release;
+package org.apache.hdt.hadoop2.release;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -28,12 +28,10 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.ServiceLoader;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -52,6 +50,7 @@ import org.apache.hadoop.mapred.JobConf;
 import org.apache.hadoop.mapred.JobID;
 import org.apache.hadoop.mapred.JobStatus;
 import org.apache.hadoop.mapred.RunningJob;
+import org.apache.hadoop.yarn.conf.YarnConfiguration;
 import org.apache.hdt.core.Activator;
 import org.apache.hdt.core.launch.AbstractHadoopCluster;
 import org.apache.hdt.core.launch.ConfProp;
@@ -129,15 +128,15 @@ public class HadoopCluster extends AbstractHadoopCluster {
 			Thread current = Thread.currentThread();
 			ClassLoader oldLoader = current.getContextClassLoader();
 			try {
-				current.setContextClassLoader(HadoopCluster.class.getClassLoader());
+			        current.setContextClassLoader(HadoopCluster.class.getClassLoader());
 				// Set of all known existing Job IDs we want fresh info of
 				Set<JobID> missingJobIds = new HashSet<JobID>(runningJobs.keySet());
 
 				JobStatus[] jstatus = client.jobsToComplete();
 				jstatus = jstatus == null ? new JobStatus[0] : jstatus;
-				for (final JobStatus status : jstatus) {
+				for (JobStatus status : jstatus) {
 
-					final JobID jobId = status.getJobID();
+					JobID jobId = status.getJobID();
 					missingJobIds.remove(jobId);
 
 					HadoopJob hJob;
@@ -145,11 +144,7 @@ public class HadoopCluster extends AbstractHadoopCluster {
 						hJob = runningJobs.get(jobId);
 						if (hJob == null) {
 							// Unknown job, create an entry
-							final RunningJob running = client.getJob(jobId);
-							ServiceLoader<FileSystem> serviceLoader = ServiceLoader.load(FileSystem.class);
-					        for (FileSystem fs : serviceLoader) {
-					        	System.out.println(fs.getClass().getProtectionDomain().getCodeSource().getLocation());
-					        }
+							RunningJob running = client.getJob(jobId);
 							hJob = new HadoopJob(HadoopCluster.this, jobId, running, status);
 							newJob(hJob);
 						}
@@ -170,9 +165,10 @@ public class HadoopCluster extends AbstractHadoopCluster {
 				client = null;
 				return new Status(Status.ERROR, Activator.BUNDLE_ID, 0, "Cannot retrieve running Jobs on location: " + HadoopCluster.this.getLocationName(),
 						ioe);
-			}finally {
-                current.setContextClassLoader(oldLoader);
-             }
+			} finally {
+                            current.setContextClassLoader(oldLoader);
+                         }
+
 
 			// Schedule the next observation
 			schedule(STATUS_OBSERVATION_DELAY);
@@ -242,11 +238,15 @@ public class HadoopCluster extends AbstractHadoopCluster {
 	/**
 	 * Creates a new default Hadoop location
 	 */
-	public HadoopCluster() {
-		this.conf = new Configuration();
-		this.addPluginConfigDefaultProperties();
-	}
-
+        public HadoopCluster() {
+            this.conf = new Configuration();
+            this.addPluginConfigDefaultProperties();
+            conf.set("mapreduce.framework.name", "yarn");
+            conf.set(YarnConfiguration.RM_ADDRESS, "localhost:8032");
+            conf.set(getConfPropName(ConfProp.PI_JOB_TRACKER_PORT), "8032");
+            conf.set("mapreduce.jobhistory.address", "localhost:10020");
+        }
+   
 	/**
 	 * Creates a location from a file
 	 * 
@@ -328,7 +328,8 @@ public class HadoopCluster extends AbstractHadoopCluster {
 	 * @return the property value
 	 */
 	public String getConfPropValue(ConfProp prop) {
-		return conf.get(getConfPropName(prop));
+		String confPropName = getConfPropName(prop);
+		return conf.get(confPropName);
 	}
 
 	/**
@@ -439,19 +440,34 @@ public class HadoopCluster extends AbstractHadoopCluster {
 	 *            the property value
 	 */
 	public void setConfPropValue(ConfProp prop, String propValue) {
-		if (propValue != null)
-			setConfPropValue(getConfPropName(prop), propValue);
-	}
+            if (propValue != null)
+                    setConfPropValue(getConfPropName(prop), propValue);
+        }
+    
+        @Override
+        public void setConfPropValue(String propName, String propValue) {
+                conf.set(propName, propValue);
+        }
 
-	@Override
-	public void setConfPropValue(String propName, String propValue) {
-		conf.set(propName, propValue);
-	}
-	
 	public void setLocationName(String newName) {
 		setConfPropValue(ConfProp.PI_LOCATION_NAME, newName);
 	}
-
+    
+	@Override
+	public String getConfPropName(ConfProp prop) {
+	    if(ConfProp.JOB_TRACKER_URI.equals(prop))
+	        return YarnConfiguration.RM_ADDRESS;
+	    return super.getConfPropName(prop);
+	}
+        @Override
+        public ConfProp getConfPropForName(String propName) {
+            if(YarnConfiguration.RM_ADDRESS.equals(propName))
+                return ConfProp.JOB_TRACKER_URI;
+            if("mapred.job.tracker".equals(propName))
+                return null;
+            return super.getConfPropForName(propName);
+        }
+    
 	/**
 	 * Write this location settings to the given output stream
 	 * 
@@ -560,7 +576,7 @@ public class HadoopCluster extends AbstractHadoopCluster {
 		conf.setJar(jarFilePath);
 		// Write it to the disk file
 		File coreSiteFile = new File(confDir, "core-site.xml");
-		File mapredSiteFile = new File(confDir, "mapred-site.xml");
+		File mapredSiteFile = new File(confDir, "yarn-site.xml");
 		FileOutputStream fos = new FileOutputStream(coreSiteFile);
 		FileInputStream fis = null;
 		try {
@@ -582,16 +598,13 @@ public class HadoopCluster extends AbstractHadoopCluster {
 	@Override
 	public boolean isAvailable() throws CoreException {
 		Callable<JobClient> task= new Callable<JobClient>() {
-			
 			@Override
 			public JobClient call() throws Exception {
-				return getJobClient();
-			}
-		}; 
+			    return getJobClient();}}; 
 		Future<JobClient> jobClientFuture = service.submit(task);
 		try{
-			JobClient jobClient = jobClientFuture.get(5, TimeUnit.SECONDS);
-			return jobClient!=null;
+			jobClientFuture.get(500, TimeUnit.SECONDS);
+			return true;
 		}catch(Exception e){
 			e.printStackTrace();
 			throw new CoreException(new Status(Status.ERROR, 
@@ -599,11 +612,8 @@ public class HadoopCluster extends AbstractHadoopCluster {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.apache.hdt.core.launch.AbstractHadoopCluster#getVersion()
-	 */
-	@Override
-	public String getVersion() {
-		return "1.1";
-	}
+    @Override
+    public String getVersion() {
+        return "2.2";
+    }
 }

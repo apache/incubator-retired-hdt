@@ -16,13 +16,13 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 -->
-<fragment>
+<plugin>
    <extension
          point="org.apache.hdt.core.hdfsClient">
       <hdfsClient
             class="org.apache.hdt.hadoop.release.HDFSClientRelease"
             protocol="hdfs"
-            protocolVersion="1.1.2.21">
+            protocolVersion="1.1">
       </hdfsClient>
    </extension>
    <extension
@@ -40,4 +40,4 @@
       </hadoopCluster>
    </extension>
 
-</fragment>
+</plugin>

@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.hdt.hadoop.release;
+package org.apache.hdt.hadoop2.release;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,7 +31,6 @@ import org.apache.hadoop.mapred.JobStatus;
 import org.apache.hadoop.mapred.RunningJob;
 import org.apache.hdt.core.launch.AbstractHadoopCluster;
 import org.apache.hdt.core.launch.IHadoopJob;
-import org.eclipse.core.runtime.internal.adaptor.ContextFinder;
 
 /**
  * Representation of a Map/Reduce running job on a given location
@@ -126,14 +125,10 @@ public class HadoopJob implements IHadoopJob {
 	 * @param status
 	 */
 	public HadoopJob(HadoopCluster location, JobID id, RunningJob running, JobStatus status) {
-		//HadoopCluster.updateCurrentClassLoader();
-
 		this.location = location;
 		this.jobId = id;
 		this.running = running;
-
 		loadJobFile();
-
 		update(status);
 	}
 
@@ -206,7 +201,6 @@ public class HadoopJob implements IHadoopJob {
 		} else {
 			return JobState.RUNNING.toString();
 		}
-		// return JobState.ofInt(this.status.getRunState());
 	}
 
 	/**

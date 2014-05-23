@@ -35,9 +35,17 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
 or implied. See the License for the specific language governing
 permissions and limitations under the License.
    </license>
-
+   
    <plugin
          id="org.apache.hdt.hadoop.release"
+         download-size="0"
+         install-size="0"
+         version="0.0.2.qualifier"
+         fragment="true"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.hdt.hadoop2.release"
          download-size="0"
          install-size="0"
          version="0.0.2.qualifier"

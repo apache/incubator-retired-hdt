@@ -36,6 +36,7 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.IMessageProvider;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
@@ -47,6 +48,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
@@ -68,6 +70,8 @@ import org.eclipse.swt.widgets.Text;
 
 public class HadoopLocationWizard extends WizardPage {
 
+	public  static final String HADOOP_1 = "1.1";
+	public  static final String HADOOP_2 = "2.2";
 	Image circle;
 
 	/**
@@ -90,7 +94,7 @@ public class HadoopLocationWizard extends WizardPage {
 
 		this.original = null;
 		try {
-			this.location = AbstractHadoopCluster.createCluster();
+			this.location = AbstractHadoopCluster.createCluster(ConfProp.PI_HADOOP_VERSION.defVal);
 		} catch (CoreException e) {
 			e.printStackTrace();
 		}
@@ -125,8 +129,8 @@ public class HadoopLocationWizard extends WizardPage {
 				Display.getDefault().syncExec(new Runnable() {
 					public void run() {
 						HDFSManager.addServer(location.getLocationName(),
-								location.getConfProp(ConfProp.FS_DEFAULT_URI), location
-								.getConfProp(ConfProp.PI_USER_NAME), null);
+								location.getConfPropValue(ConfProp.FS_DEFAULT_URI), location
+								.getConfPropValue(ConfProp.PI_USER_NAME), null,location.getVersion());
 					}
 				});
 				// New location
@@ -141,9 +145,9 @@ public class HadoopLocationWizard extends WizardPage {
 				
 				// Update location
 				final String originalName = this.original.getLocationName();
-				final String originalLoc = this.original.getConfProp(ConfProp.FS_DEFAULT_URI);
+				final String originalLoc = this.original.getConfPropValue(ConfProp.FS_DEFAULT_URI);
 				final String newName = this.location.getLocationName();
-				final String newLoc = this.location.getConfProp(ConfProp.FS_DEFAULT_URI);
+				final String newLoc = this.location.getConfPropValue(ConfProp.FS_DEFAULT_URI);
 				
 				if (!originalName.equals(newName) || !originalLoc.equals(newLoc)){
 					IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
@@ -160,8 +164,8 @@ public class HadoopLocationWizard extends WizardPage {
 								}
 							}
 							HDFSManager.addServer(location.getLocationName(),
-									location.getConfProp(ConfProp.FS_DEFAULT_URI), location
-									.getConfProp(ConfProp.PI_USER_NAME), null);
+									location.getConfPropValue(ConfProp.FS_DEFAULT_URI), location
+									.getConfPropValue(ConfProp.PI_USER_NAME), null,location.getVersion());
 						}
 					});
 				}
@@ -204,7 +208,7 @@ public class HadoopLocationWizard extends WizardPage {
 	public boolean isPageComplete() {
 
 		{
-			String locName = location.getConfProp(ConfProp.PI_LOCATION_NAME);
+			String locName = location.getConfPropValue(ConfProp.PI_LOCATION_NAME);
 			if ((locName == null) || (locName.length() == 0) || locName.contains("/")) {
 
 				setMessage("Bad location name: " + "the location name should not contain " + "any character prohibited in a file name.", WARNING);
@@ -214,7 +218,7 @@ public class HadoopLocationWizard extends WizardPage {
 		}
 
 		{
-			String master = location.getConfProp(ConfProp.PI_JOB_TRACKER_HOST);
+			String master = location.getConfPropValue(ConfProp.PI_JOB_TRACKER_HOST);
 			if ((master == null) || (master.length() == 0)) {
 
 				setMessage("Bad master host name: " + "the master host name refers to the machine " + "that runs the Job tracker.", WARNING);
@@ -224,7 +228,7 @@ public class HadoopLocationWizard extends WizardPage {
 		}
 
 		{
-			String jobTracker = location.getConfProp(ConfProp.JOB_TRACKER_URI);
+			String jobTracker = location.getConfPropValue(ConfProp.JOB_TRACKER_URI);
 			String[] strs = jobTracker.split(":");
 			boolean ok = (strs.length == 2);
 			if (ok) {
@@ -236,14 +240,14 @@ public class HadoopLocationWizard extends WizardPage {
 				}
 			}
 			if (!ok) {
-				setMessage("The job tracker information (" + ConfProp.JOB_TRACKER_URI.name + ") is invalid. " + "This usually looks like \"host:port\"",
+				setMessage("The job tracker information is invalid. " + "This usually looks like \"host:port\"",
 						WARNING);
 				return false;
 			}
 		}
 
 		{
-			String fsDefaultURI = location.getConfProp(ConfProp.FS_DEFAULT_URI);
+			String fsDefaultURI = location.getConfPropValue(ConfProp.FS_DEFAULT_URI);
 			try {
 				URI uri = new URI(fsDefaultURI);
 			} catch (URISyntaxException e) {
@@ -301,6 +305,7 @@ public class HadoopLocationWizard extends WizardPage {
 
 	private interface TabListener {
 		void notifyChange(ConfProp prop, String propValue);
+		void reloadData();
 	}
 
 	/*
@@ -320,21 +325,6 @@ public class HadoopLocationWizard extends WizardPage {
 		}
 
 		/**
-		 * Access to current configuration settings
-		 * 
-		 * @param propName
-		 *            the property name
-		 * @return the current property value
-		 */
-		String get(String propName) {
-			return location.getConfProp(propName);
-		}
-
-		String get(ConfProp prop) {
-			return location.getConfProp(prop);
-		}
-
-		/**
 		 * Implements change notifications from any tab: update the location
 		 * state and other tabs
 		 * 
@@ -347,11 +337,11 @@ public class HadoopLocationWizard extends WizardPage {
 		 */
 		void notifyChange(TabListener source, final ConfProp prop, final String propValue) {
 			// Ignore notification when no change
-			String oldValue = location.getConfProp(prop);
+			String oldValue = location.getConfPropValue(prop);
 			if ((oldValue != null) && oldValue.equals(propValue))
 				return;
 
-			location.setConfProp(prop, propValue);
+			location.setConfPropValue(prop, propValue);
 			Display.getDefault().syncExec(new Runnable() {
 				public void run() {
 					getContainer().updateButtons();
@@ -363,17 +353,17 @@ public class HadoopLocationWizard extends WizardPage {
 			/*
 			 * Now we deal with dependencies between settings
 			 */
-			final String jobTrackerHost = location.getConfProp(ConfProp.PI_JOB_TRACKER_HOST);
-			final String jobTrackerPort = location.getConfProp(ConfProp.PI_JOB_TRACKER_PORT);
-			final String nameNodeHost = location.getConfProp(ConfProp.PI_NAME_NODE_HOST);
-			final String nameNodePort = location.getConfProp(ConfProp.PI_NAME_NODE_PORT);
-			final boolean colocate = location.getConfProp(ConfProp.PI_COLOCATE_MASTERS).equalsIgnoreCase("yes");
-			final String jobTrackerURI = location.getConfProp(ConfProp.JOB_TRACKER_URI);
-			final String fsDefaultURI = location.getConfProp(ConfProp.FS_DEFAULT_URI);
-			final String socksServerURI = location.getConfProp(ConfProp.SOCKS_SERVER);
-			final boolean socksProxyEnable = location.getConfProp(ConfProp.PI_SOCKS_PROXY_ENABLE).equalsIgnoreCase("yes");
-			final String socksProxyHost = location.getConfProp(ConfProp.PI_SOCKS_PROXY_HOST);
-			final String socksProxyPort = location.getConfProp(ConfProp.PI_SOCKS_PROXY_PORT);
+			final String jobTrackerHost = location.getConfPropValue(ConfProp.PI_JOB_TRACKER_HOST);
+			final String jobTrackerPort = location.getConfPropValue(ConfProp.PI_JOB_TRACKER_PORT);
+			final String nameNodeHost = location.getConfPropValue(ConfProp.PI_NAME_NODE_HOST);
+			final String nameNodePort = location.getConfPropValue(ConfProp.PI_NAME_NODE_PORT);
+			final boolean colocate = location.getConfPropValue(ConfProp.PI_COLOCATE_MASTERS).equalsIgnoreCase("yes");
+			final String jobTrackerURI = location.getConfPropValue(ConfProp.JOB_TRACKER_URI) ;
+			final String fsDefaultURI = location.getConfPropValue(ConfProp.FS_DEFAULT_URI);
+			final String socksServerURI = location.getConfPropValue(ConfProp.SOCKS_SERVER);
+			final boolean socksProxyEnable = location.getConfPropValue(ConfProp.PI_SOCKS_PROXY_ENABLE).equalsIgnoreCase("yes");
+			final String socksProxyHost = location.getConfPropValue(ConfProp.PI_SOCKS_PROXY_HOST);
+			final String socksProxyPort = location.getConfPropValue(ConfProp.PI_SOCKS_PROXY_PORT);
 
 			Display.getDefault().syncExec(new Runnable() {
 				public void run() {
@@ -456,7 +446,7 @@ public class HadoopLocationWizard extends WizardPage {
 							notifyChange(null, ConfProp.SOCKET_FACTORY_DEFAULT, "org.apache.hadoop.net.StandardSocketFactory");
 						}
 						break;
-					}
+					}					
 					}
 				}
 			});
@@ -473,12 +463,11 @@ public class HadoopLocationWizard extends WizardPage {
 		 * @param propValue
 		 */
 		void notifyChange(TabListener source, String propName, String propValue) {
-
-			ConfProp prop = ConfProp.getByName(propName);
+			ConfProp prop = location.getConfPropForName(propName);
 			if (prop != null)
 				notifyChange(source, prop, propValue);
-
-			location.setConfProp(propName, propValue);
+			else
+				location.setConfPropValue(propName, propValue);
 		}
 
 		/**
@@ -510,12 +499,11 @@ public class HadoopLocationWizard extends WizardPage {
 	 * @return
 	 */
 	private Text createConfText(ModifyListener listener, Composite parent, ConfProp prop) {
-
 		Text text = new Text(parent, SWT.SINGLE | SWT.BORDER);
 		GridData data = new GridData(GridData.FILL_HORIZONTAL);
 		text.setLayoutData(data);
-		text.setData("hProp", prop);
-		text.setText(location.getConfProp(prop));
+		text.setData("hProp",prop);
+		text.setText(location.getConfPropValue(prop));
 		text.addModifyListener(listener);
 
 		return text;
@@ -531,13 +519,11 @@ public class HadoopLocationWizard extends WizardPage {
 	 * @return
 	 */
 	private Button createConfCheckButton(SelectionListener listener, Composite parent, ConfProp prop, String text) {
-
 		Button button = new Button(parent, SWT.CHECK);
 		button.setText(text);
 		button.setData("hProp", prop);
-		button.setSelection(location.getConfProp(prop).equalsIgnoreCase("yes"));
+		button.setSelection(location.getConfPropValue(prop).equalsIgnoreCase("yes"));
 		button.addSelectionListener(listener);
-
 		return button;
 	}
 
@@ -557,12 +543,10 @@ public class HadoopLocationWizard extends WizardPage {
 	 * @return a SWT Text field
 	 */
 	private Text createConfLabelText(ModifyListener listener, Composite parent, ConfProp prop, String labelText) {
-
 		Label label = new Label(parent, SWT.NONE);
 		if (labelText == null)
-			labelText = prop.name;
+			labelText = location.getConfPropName(prop);
 		label.setText(labelText);
-
 		return createConfText(listener, parent, prop);
 	}
 
@@ -583,7 +567,7 @@ public class HadoopLocationWizard extends WizardPage {
 	private Text createConfNameEditor(ModifyListener listener, Composite parent, String propName, String labelText) {
 
 		{
-			ConfProp prop = ConfProp.getByName(propName);
+			ConfProp prop = location.getConfPropForName(propName);
 			if (prop != null)
 				return createConfLabelText(listener, parent, prop, labelText);
 		}
@@ -597,7 +581,7 @@ public class HadoopLocationWizard extends WizardPage {
 		GridData data = new GridData(GridData.FILL_HORIZONTAL);
 		text.setLayoutData(data);
 		text.setData("hPropName", propName);
-		text.setText(location.getConfProp(propName));
+		text.setText(location.getConfPropValue(propName));
 		text.addModifyListener(listener);
 
 		return text;
@@ -610,11 +594,19 @@ public class HadoopLocationWizard extends WizardPage {
 	 */
 	private class TabMain implements TabListener, ModifyListener, SelectionListener {
 
+		/**
+		 * 
+		 */
+		
+
 		TabMediator mediator;
 
 		Text locationName;
+		
+		Combo hadoopVersion;
 
 		Text textJTHost;
+		
 
 		Text textNNHost;
 
@@ -631,6 +623,8 @@ public class HadoopLocationWizard extends WizardPage {
 		Text socksProxyHost;
 
 		Text socksProxyPort;
+
+		private Group groupMR;
 
 		TabMain(TabMediator mediator) {
 			this.mediator = mediator;
@@ -661,12 +655,56 @@ public class HadoopLocationWizard extends WizardPage {
 
 				locationName = createConfLabelText(this, subpanel, ConfProp.PI_LOCATION_NAME, "&Location name:");
 			}
+			/*
+			 * Hadoop version
+			 */
+			{
+				Composite subpanel = new Composite(panel, SWT.FILL);
+				subpanel.setLayout(new GridLayout(2, false));
+				data = new GridData();
+				data.horizontalSpan = 2;
+				data.horizontalAlignment = SWT.FILL;
+				subpanel.setLayoutData(data);
+				
+				Label label = new Label(subpanel, SWT.NONE);
+				label.setText("&Hadoop Version:");
+				Combo options =  new Combo (subpanel, SWT.BORDER | SWT.READ_ONLY);
+				options.add (HADOOP_1);
+				options.add (HADOOP_2);
+				options.select(0);
+				options.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+				options.addListener (SWT.Selection, new Listener () {
+					@Override
+					public void handleEvent(Event event) {
+						final String selection = hadoopVersion.getText();
+						if (location == null || !selection.equals(location.getVersion())) {
+							Display.getDefault().syncExec(new Runnable() {
 
+								@Override
+								public void run() {
+									try {
+										location = AbstractHadoopCluster.createCluster(selection);
+										for (TabListener tab : mediator.tabs) {
+											tab.reloadData();
+										}
+									} catch (CoreException e) {
+										MessageDialog.openError(Display.getDefault().getActiveShell(), "HDFS Error", "Unable to create HDFS site :"
+												+ e.getMessage());
+									}
+								}
+							});
+						}
+
+					}
+				});
+				hadoopVersion = options;
+			}
+			
 			/*
 			 * Map/Reduce group
 			 */
 			{
-				Group groupMR = new Group(panel, SWT.SHADOW_NONE);
+				groupMR = new Group(panel, SWT.SHADOW_NONE);
 				groupMR.setText("Map/Reduce Master");
 				groupMR.setToolTipText("Address of the Map/Reduce master node " + "(the Job Tracker).");
 				GridLayout layout = new GridLayout(2, false);
@@ -783,7 +821,7 @@ public class HadoopLocationWizard extends WizardPage {
 			// Update the state of all widgets according to the current values!
 			reloadConfProp(ConfProp.PI_COLOCATE_MASTERS);
 			reloadConfProp(ConfProp.PI_SOCKS_PROXY_ENABLE);
-			reloadConfProp(ConfProp.PI_JOB_TRACKER_HOST);
+			reloadConfProp(ConfProp.PI_HADOOP_VERSION);
 
 			return panel;
 		}
@@ -794,7 +832,28 @@ public class HadoopLocationWizard extends WizardPage {
 		 * @param prop
 		 */
 		private void reloadConfProp(ConfProp prop) {
-			this.notifyChange(prop, location.getConfProp(prop));
+			this.notifyChange(prop, location.getConfPropValue(prop));
+		}
+		
+		@Override
+		public void reloadData() {
+			if (HADOOP_2.equals(hadoopVersion.getText())) {
+				groupMR.setText("Resource Manager Master");
+				groupMR.setToolTipText("Address of the Resouce manager node ");
+			} else {
+				groupMR.setText("Map/Reduce Master");
+				groupMR.setToolTipText("Address of the Map/Reduce master node " + "(the Job Tracker).");
+			}
+			groupMR.layout(true);
+			notifyChange(ConfProp.PI_JOB_TRACKER_HOST,location.getConfPropValue(ConfProp.PI_JOB_TRACKER_HOST));
+			notifyChange(ConfProp.PI_JOB_TRACKER_PORT,location.getConfPropValue(ConfProp.PI_JOB_TRACKER_PORT));
+			notifyChange(ConfProp.PI_USER_NAME,location.getConfPropValue(ConfProp.PI_USER_NAME));
+			notifyChange(ConfProp.PI_NAME_NODE_HOST,location.getConfPropValue(ConfProp.PI_NAME_NODE_HOST));
+			notifyChange(ConfProp.PI_USER_NAME,location.getConfPropValue(ConfProp.PI_USER_NAME));
+			notifyChange(ConfProp.PI_COLOCATE_MASTERS,location.getConfPropValue(ConfProp.PI_COLOCATE_MASTERS));
+			notifyChange(ConfProp.PI_SOCKS_PROXY_ENABLE,location.getConfPropValue(ConfProp.PI_SOCKS_PROXY_ENABLE));
+			notifyChange(ConfProp.PI_SOCKS_PROXY_HOST,location.getConfPropValue(ConfProp.PI_SOCKS_PROXY_HOST));
+			notifyChange(ConfProp.PI_SOCKS_PROXY_PORT,location.getConfPropValue(ConfProp.PI_SOCKS_PROXY_PORT));
 		}
 
 		public void notifyChange(ConfProp prop, String propValue) {
@@ -851,10 +910,11 @@ public class HadoopLocationWizard extends WizardPage {
 			case PI_SOCKS_PROXY_PORT: {
 				socksProxyPort.setText(propValue);
 				break;
-			}
+			}			
 			}
 		}
 
+		
 		/* @inheritDoc */
 		public void modifyText(ModifyEvent e) {
 			final Text text = (Text) e.widget;
@@ -888,9 +948,7 @@ public class HadoopLocationWizard extends WizardPage {
 
 	private class TabAdvanced implements TabListener, ModifyListener {
 		TabMediator mediator;
-
 		private Composite panel;
-
 		private Map<String, Text> textMap = new TreeMap<String, Text>();
 
 		TabAdvanced(TabMediator mediator) {
@@ -905,15 +963,29 @@ public class HadoopLocationWizard extends WizardPage {
 
 		private Control createControl(Composite parent) {
 			ScrolledComposite sc = new ScrolledComposite(parent, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
-
-			panel = new Composite(sc, SWT.NONE);
+			panel=buildPanel(sc);
 			sc.setContent(panel);
-
 			sc.setExpandHorizontal(true);
 			sc.setExpandVertical(true);
-
 			sc.setMinSize(640, 480);
+			sc.setMinSize(panel.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+			return sc;
+		}
+		
+		@Override
+		public void reloadData() {
+			ScrolledComposite parent = (ScrolledComposite)panel.getParent();
+			panel.dispose();
+			Composite panel = buildPanel(parent);
+			parent.setContent(panel);
+			parent.setMinSize(panel.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+			parent.pack();
+			parent.layout(true);
+			this.panel=panel;
+		}
 
+		private Composite buildPanel(Composite parent) {
+			Composite panel = new Composite(parent, SWT.NONE);
 			GridLayout layout = new GridLayout();
 			layout.numColumns = 2;
 			layout.makeColumnsEqualWidth = false;
@@ -932,14 +1004,12 @@ public class HadoopLocationWizard extends WizardPage {
 				Text text = createConfNameEditor(this, panel, entry.getKey(), null);
 				textMap.put(entry.getKey(), text);
 			}
-
-			sc.setMinSize(panel.computeSize(SWT.DEFAULT, SWT.DEFAULT));
-
-			return sc;
+			return panel;
 		}
+		
 
 		public void notifyChange(ConfProp prop, final String propValue) {
-			Text text = textMap.get(prop.name);
+			Text text = textMap.get(location.getConfPropName(prop));
 			text.setText(propValue);
 		}
 
@@ -959,6 +1029,8 @@ public class HadoopLocationWizard extends WizardPage {
 				}
 			});
 		}
+
+	
 	}
 
 }

@@ -228,13 +228,22 @@ public interface HadoopPackage extends EPackage {
 	int HDFS_SERVER__GROUP_IDS = SERVER_FEATURE_COUNT + 3;
 
 	/**
+	 * The feature id for the '<em><b>Version</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int HDFS_SERVER__VERSION = SERVER_FEATURE_COUNT + 4;
+
+	/**
 	 * The number of structural features of the '<em>HDFS Server</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int HDFS_SERVER_FEATURE_COUNT = SERVER_FEATURE_COUNT + 4;
+	int HDFS_SERVER_FEATURE_COUNT = SERVER_FEATURE_COUNT + 5;
 
 	/**
 	 * The meta object id for the '{@link org.apache.hdt.core.internal.model.impl.ServersImpl <em>Servers</em>}' class.
@@ -737,6 +746,17 @@ public interface HadoopPackage extends EPackage {
 	EAttribute getHDFSServer_GroupIds();
 
 	/**
+	 * Returns the meta object for the attribute '{@link org.apache.hdt.core.internal.model.HDFSServer#getVersion <em>Version</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Version</em>'.
+	 * @see org.apache.hdt.core.internal.model.HDFSServer#getVersion()
+	 * @see #getHDFSServer()
+	 * @generated
+	 */
+	EAttribute getHDFSServer_Version();
+
+	/**
 	 * Returns the meta object for class '{@link org.apache.hdt.core.internal.model.Servers <em>Servers</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1124,6 +1144,14 @@ public interface HadoopPackage extends EPackage {
 		 * @generated
 		 */
 		EAttribute HDFS_SERVER__GROUP_IDS = eINSTANCE.getHDFSServer_GroupIds();
+
+		/**
+		 * The meta object literal for the '<em><b>Version</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute HDFS_SERVER__VERSION = eINSTANCE.getHDFSServer_Version();
 
 		/**
 		 * The meta object literal for the '{@link org.apache.hdt.core.internal.model.impl.ServersImpl <em>Servers</em>}' class.
