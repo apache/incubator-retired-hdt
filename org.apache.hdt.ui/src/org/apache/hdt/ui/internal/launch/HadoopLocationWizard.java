@@ -684,6 +684,8 @@ public class HadoopLocationWizard extends WizardPage {
 								public void run() {
 									try {
 										location = AbstractHadoopCluster.createCluster(selection);
+										location.setConfPropValue(ConfProp.PI_HADOOP_VERSION, selection);
+										location.setConfPropValue(ConfProp.PI_LOCATION_NAME, "");
 										for (TabListener tab : mediator.tabs) {
 											tab.reloadData();
 										}
@@ -854,6 +856,7 @@ public class HadoopLocationWizard extends WizardPage {
 			notifyChange(ConfProp.PI_SOCKS_PROXY_ENABLE,location.getConfPropValue(ConfProp.PI_SOCKS_PROXY_ENABLE));
 			notifyChange(ConfProp.PI_SOCKS_PROXY_HOST,location.getConfPropValue(ConfProp.PI_SOCKS_PROXY_HOST));
 			notifyChange(ConfProp.PI_SOCKS_PROXY_PORT,location.getConfPropValue(ConfProp.PI_SOCKS_PROXY_PORT));
+			notifyChange(ConfProp.PI_LOCATION_NAME,location.getConfPropValue(ConfProp.PI_LOCATION_NAME));
 		}
 
 		public void notifyChange(ConfProp prop, String propValue) {

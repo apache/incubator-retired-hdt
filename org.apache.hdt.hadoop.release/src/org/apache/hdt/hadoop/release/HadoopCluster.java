@@ -248,18 +248,6 @@ public class HadoopCluster extends AbstractHadoopCluster {
 	}
 
 	/**
-	 * Creates a location from a file
-	 * 
-	 * @throws IOException
-	 * @throws SAXException
-	 * @throws ParserConfigurationException
-	 */
-	public HadoopCluster(File file) throws ParserConfigurationException, SAXException, IOException {
-		this();
-		this.loadFromXML(file);
-	}
-
-	/**
 	 * Create a new Hadoop location by copying an already existing one.
 	 * 
 	 * @param source
@@ -369,61 +357,13 @@ public class HadoopCluster extends AbstractHadoopCluster {
 		this.conf = new Configuration(((HadoopCluster) existing).conf);
 	}
 
-	/**
-	 * Overwrite this location with settings available in the given XML file.
-	 * The existing configuration is preserved if the XML file is invalid.
-	 * 
-	 * @param file
-	 *            the file path of the XML file
-	 * @return validity of the XML file
-	 * @throws ParserConfigurationException
-	 * @throws IOException
-	 * @throws SAXException
-	 */
-	public boolean loadFromXML(File file) {
-
+	protected boolean loadConfiguration(Map<String, String> configuration) {
 		Configuration newConf = new Configuration(this.conf);
-		DocumentBuilder builder;
-		Document document;
-		try {
-			builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-			document = builder.parse(file);
-		} catch (ParserConfigurationException e) {
-			e.printStackTrace();
+		if(configuration ==null)
 			return false;
-		} catch (SAXException e) {
-			e.printStackTrace();
-			return false;
-		} catch (IOException e) {
-			e.printStackTrace();
-			return false;
-		}
-		Element root = document.getDocumentElement();
-		if (!"configuration".equals(root.getTagName()))
-			return false;
-		NodeList props = root.getChildNodes();
-		for (int i = 0; i < props.getLength(); i++) {
-			Node propNode = props.item(i);
-			if (!(propNode instanceof Element))
-				continue;
-			Element prop = (Element) propNode;
-			if (!"property".equals(prop.getTagName()))
-				return false;
-			NodeList fields = prop.getChildNodes();
-			String attr = null;
-			String value = null;
-			for (int j = 0; j < fields.getLength(); j++) {
-				Node fieldNode = fields.item(j);
-				if (!(fieldNode instanceof Element))
-					continue;
-				Element field = (Element) fieldNode;
-				if ("name".equals(field.getTagName()))
-					attr = ((Text) field.getFirstChild()).getData();
-				if ("value".equals(field.getTagName()) && field.hasChildNodes())
-					value = ((Text) field.getFirstChild()).getData();
-			}
-			if (attr != null && value != null)
-				newConf.set(attr, value);
+		
+		for (Entry<String, String> entry : configuration.entrySet()) {
+			newConf.set(entry.getKey() , entry.getValue());
 		}
 
 		this.conf = newConf;

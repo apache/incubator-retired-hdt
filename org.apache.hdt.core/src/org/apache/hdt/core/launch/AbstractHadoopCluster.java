@@ -21,16 +21,27 @@ package org.apache.hdt.core.launch;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.apache.hdt.core.Activator;
-import org.apache.hdt.core.internal.HadoopManager;
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.Text;
+import org.xml.sax.SAXException;
 
 public abstract class AbstractHadoopCluster {
 	
@@ -68,15 +79,17 @@ public abstract class AbstractHadoopCluster {
 
 	abstract public String getState();
 
-	abstract public boolean loadFromXML(File file) throws IOException;
+	abstract protected boolean loadConfiguration(Map<String, String> configuration);
 	
 	abstract public boolean isAvailable() throws CoreException;
 	
 	abstract public String getVersion();
 	
 	public static AbstractHadoopCluster createCluster(File file) throws CoreException, IOException {
-		AbstractHadoopCluster hadoopCluster = createCluster(ConfProp.PI_HADOOP_VERSION.defVal);
-		hadoopCluster.loadFromXML(file);
+		Map<String, String> configuration = loadXML(file);
+		String version = configuration.get(ConfProp.PI_HADOOP_VERSION.name);
+		AbstractHadoopCluster hadoopCluster = createCluster(version!=null?version:ConfProp.PI_HADOOP_VERSION.defVal);
+		hadoopCluster.loadConfiguration(configuration);
 		return hadoopCluster;
 	}
 
@@ -96,6 +109,54 @@ public abstract class AbstractHadoopCluster {
 		AbstractHadoopCluster hadoopCluster = createCluster(existing.getVersion());
 		hadoopCluster.load(existing);
 		return hadoopCluster;
+	}
+	
+	
+	protected static Map<String,String> loadXML(File file) {
+		DocumentBuilder builder;
+		Document document;
+		try {
+			builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+			document = builder.parse(file);
+		} catch (ParserConfigurationException e) {
+			e.printStackTrace();
+			return null;
+		} catch (SAXException e) {
+			e.printStackTrace();
+			return null;
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+		Element root = document.getDocumentElement();
+		if (!"configuration".equals(root.getTagName()))
+			return null;
+		NodeList props = root.getChildNodes();
+		Map<String,String> configuration= new HashMap<String, String>();
+		for (int i = 0; i < props.getLength(); i++) {
+			Node propNode = props.item(i);
+			if (!(propNode instanceof Element))
+				continue;
+			Element prop = (Element) propNode;
+			if (!"property".equals(prop.getTagName()))
+				return null;
+			NodeList fields = prop.getChildNodes();
+			String attr = null;
+			String value = null;
+			for (int j = 0; j < fields.getLength(); j++) {
+				Node fieldNode = fields.item(j);
+				if (!(fieldNode instanceof Element))
+					continue;
+				Element field = (Element) fieldNode;
+				if ("name".equals(field.getTagName()))
+					attr = ((Text) field.getFirstChild()).getData();
+				if ("value".equals(field.getTagName()) && field.hasChildNodes())
+					value = ((Text) field.getFirstChild()).getData();
+			}
+			if (attr != null && value != null)
+				configuration.put(attr, value);
+		}
+		return configuration;
 	}
 
 	/**
