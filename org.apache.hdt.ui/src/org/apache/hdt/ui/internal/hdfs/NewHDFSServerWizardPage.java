@@ -24,11 +24,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import org.apache.hdt.core.HadoopVersion;
 import org.apache.hdt.core.hdfs.HDFSClient;
 import org.apache.hdt.core.internal.hdfs.HDFSManager;
 import org.apache.hdt.core.launch.ConfProp;
 import org.apache.hdt.ui.Activator;
-import org.apache.hdt.ui.internal.launch.HadoopLocationWizard;
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.wizard.WizardPage;
@@ -130,8 +130,9 @@ public class NewHDFSServerWizardPage extends WizardPage {
 			label.setText("&HDFS Version:");
 			Combo options =  new Combo (c, SWT.SINGLE | SWT.BORDER|SWT.READ_ONLY);
 			options.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-			options.add (HadoopLocationWizard.HADOOP_1);
-			options.add (HadoopLocationWizard.HADOOP_2);
+			for(HadoopVersion ver:HadoopVersion.values()){
+				options.add(ver.getDisplayName());
+			}
 			options.addListener (SWT.Selection, new Listener () {
 
 				@Override

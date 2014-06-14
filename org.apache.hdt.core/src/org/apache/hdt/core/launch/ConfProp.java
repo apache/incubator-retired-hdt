@@ -36,16 +36,16 @@ public enum ConfProp {
 	 * Property name for the master host name (the Job tracker)
 	 */
 	PI_JOB_TRACKER_HOST(true, "jobtracker.host", "localhost"),
+	
+	PI_RESOURCE_MGR_HOST(true, "rm.host", "localhost"),
+	
+	PI_JOB_HISTORY_HOST(true, "jobhistory.host", "localhost"),
 
 	/**
 	 * Property name for the DFS master host name (the Name node)
 	 */
 	PI_NAME_NODE_HOST(true, "namenode.host", "localhost"),
 
-	/**
-	 * Property name for the installation directory on the master node
-	 */
-	// PI_INSTALL_DIR(true, "install.dir", "/dir/hadoop-version/"),
 	/**
 	 * User name to use for Hadoop operations
 	 */
@@ -75,6 +75,10 @@ public enum ConfProp {
 	 * TCP port number for the job tracker
 	 */
 	PI_JOB_TRACKER_PORT(true, "jobtracker.port", "50020"),
+	
+	PI_RESOURCE_MGR_PORT(true, "rm.port", "8032"),
+	
+	PI_JOB_HISTORY_PORT(true, "jobhistory.port", "10020"),
 
 	/**
 	 * Are the Map/Reduce and the Distributed FS masters hosted on the same
@@ -92,6 +96,10 @@ public enum ConfProp {
 	 * Property name for naming the default file system (URI).
 	 */
 	FS_DEFAULT_URI(false, "fs.default.name", "hdfs://localhost:50040/"),
+	
+	RM_DEFAULT_URI(false, "yarn.resourcemanager.address", "localhost:8032"),
+	
+	JOB_HISTORY_DEFAULT_URI(false, "mapreduce.jobhistory.address", "localhost:10020"),
 
 	/**
 	 * Property name for the default socket factory:

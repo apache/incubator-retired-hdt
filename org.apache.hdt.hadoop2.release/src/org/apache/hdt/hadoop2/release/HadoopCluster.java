@@ -38,10 +38,6 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.io.IOUtils;
@@ -50,8 +46,8 @@ import org.apache.hadoop.mapred.JobConf;
 import org.apache.hadoop.mapred.JobID;
 import org.apache.hadoop.mapred.JobStatus;
 import org.apache.hadoop.mapred.RunningJob;
-import org.apache.hadoop.yarn.conf.YarnConfiguration;
 import org.apache.hdt.core.Activator;
+import org.apache.hdt.core.HadoopVersion;
 import org.apache.hdt.core.launch.AbstractHadoopCluster;
 import org.apache.hdt.core.launch.ConfProp;
 import org.apache.hdt.core.launch.IHadoopJob;
@@ -63,12 +59,6 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.swt.widgets.Display;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Text;
-import org.xml.sax.SAXException;
 
 /**
  * Representation of a Hadoop location, meaning of the master node (NameNode,
@@ -242,9 +232,6 @@ public class HadoopCluster extends AbstractHadoopCluster {
             this.conf = new Configuration();
             this.addPluginConfigDefaultProperties();
             conf.set("mapreduce.framework.name", "yarn");
-            conf.set(YarnConfiguration.RM_ADDRESS, "localhost:8032");
-            conf.set(getConfPropName(ConfProp.PI_JOB_TRACKER_PORT), "8032");
-            conf.set("mapreduce.jobhistory.address", "localhost:10020");
         }
    
 	/**
@@ -341,7 +328,7 @@ public class HadoopCluster extends AbstractHadoopCluster {
 	 * @return the host name of the Job tracker
 	 */
 	public String getMasterHostName() {
-		return getConfPropValue(ConfProp.PI_JOB_TRACKER_HOST);
+		return getConfPropValue(ConfProp.PI_RESOURCE_MGR_HOST);
 	}
 
 	public String getState() {
@@ -392,21 +379,6 @@ public class HadoopCluster extends AbstractHadoopCluster {
 	public void setLocationName(String newName) {
 		setConfPropValue(ConfProp.PI_LOCATION_NAME, newName);
 	}
-    
-	@Override
-	public String getConfPropName(ConfProp prop) {
-	    if(ConfProp.JOB_TRACKER_URI.equals(prop))
-	        return YarnConfiguration.RM_ADDRESS;
-	    return super.getConfPropName(prop);
-	}
-        @Override
-        public ConfProp getConfPropForName(String propName) {
-            if(YarnConfiguration.RM_ADDRESS.equals(propName))
-                return ConfProp.JOB_TRACKER_URI;
-            if("mapred.job.tracker".equals(propName))
-                return null;
-            return super.getConfPropForName(propName);
-        }
     
 	/**
 	 * Write this location settings to the given output stream
@@ -553,7 +525,13 @@ public class HadoopCluster extends AbstractHadoopCluster {
 	}
 
     @Override
-    public String getVersion() {
-        return "2.2";
+    public HadoopVersion getVersion() {
+            return HadoopVersion.Version2;
+    }
+
+
+    @Override
+    public HadoopConfigurationBuilder getUIConfigurationBuilder() {
+        return new HadoopV2ConfigurationBuilder(this);
     }
 }

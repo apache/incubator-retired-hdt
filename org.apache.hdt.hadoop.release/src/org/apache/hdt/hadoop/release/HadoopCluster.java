@@ -28,21 +28,16 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.ServiceLoader;
 import java.util.Map.Entry;
+import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
@@ -53,6 +48,7 @@ import org.apache.hadoop.mapred.JobID;
 import org.apache.hadoop.mapred.JobStatus;
 import org.apache.hadoop.mapred.RunningJob;
 import org.apache.hdt.core.Activator;
+import org.apache.hdt.core.HadoopVersion;
 import org.apache.hdt.core.launch.AbstractHadoopCluster;
 import org.apache.hdt.core.launch.ConfProp;
 import org.apache.hdt.core.launch.IHadoopJob;
@@ -64,12 +60,6 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.swt.widgets.Display;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Text;
-import org.xml.sax.SAXException;
 
 /**
  * Representation of a Hadoop location, meaning of the master node (NameNode,
@@ -543,7 +533,15 @@ public class HadoopCluster extends AbstractHadoopCluster {
 	 * @see org.apache.hdt.core.launch.AbstractHadoopCluster#getVersion()
 	 */
 	@Override
-	public String getVersion() {
-		return "1.1";
+	public HadoopVersion getVersion() {
+		return HadoopVersion.Version1;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.apache.hdt.core.launch.AbstractHadoopCluster#getUIConfigurationBuilder()
+	 */
+	@Override
+	public HadoopConfigurationBuilder getUIConfigurationBuilder() {
+		return new HadoopV1ConfigurationBuilder(this);
 	}
 }

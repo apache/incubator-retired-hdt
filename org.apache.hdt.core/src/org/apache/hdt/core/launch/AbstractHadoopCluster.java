@@ -31,11 +31,13 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.hdt.core.Activator;
+import org.apache.hdt.core.HadoopVersion;
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.swt.widgets.Composite;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -44,7 +46,19 @@ import org.w3c.dom.Text;
 import org.xml.sax.SAXException;
 
 public abstract class AbstractHadoopCluster {
-	
+
+	public interface ChangeListener {
+		void notifyChange(ConfProp prop, String propValue);
+	}
+
+	public interface HadoopConfigurationBuilder {
+		void buildControl(Composite panel);
+
+		void notifyChange(ConfProp confProp, String text);
+
+		void setChangeListener(ChangeListener l);
+	}
+
 	private static final Logger logger = Logger.getLogger(AbstractHadoopCluster.class);
 
 	abstract public String getLocationName();
@@ -68,7 +82,7 @@ public abstract class AbstractHadoopCluster {
 	abstract public void setConfPropValue(ConfProp prop, String propValue);
 
 	abstract public void setConfPropValue(String propName, String propValue);
-	
+
 	abstract public Iterator<Entry<String, String>> getConfiguration();
 
 	abstract public void purgeJob(IHadoopJob job);
@@ -80,39 +94,40 @@ public abstract class AbstractHadoopCluster {
 	abstract public String getState();
 
 	abstract protected boolean loadConfiguration(Map<String, String> configuration);
-	
+
 	abstract public boolean isAvailable() throws CoreException;
-	
-	abstract public String getVersion();
-	
+
+	abstract public HadoopVersion getVersion();
+
+	abstract public HadoopConfigurationBuilder getUIConfigurationBuilder();
+
 	public static AbstractHadoopCluster createCluster(File file) throws CoreException, IOException {
 		Map<String, String> configuration = loadXML(file);
 		String version = configuration.get(ConfProp.PI_HADOOP_VERSION.name);
-		AbstractHadoopCluster hadoopCluster = createCluster(version!=null?version:ConfProp.PI_HADOOP_VERSION.defVal);
+		AbstractHadoopCluster hadoopCluster = createCluster(version != null ? version : ConfProp.PI_HADOOP_VERSION.defVal);
 		hadoopCluster.loadConfiguration(configuration);
 		return hadoopCluster;
 	}
 
 	public static AbstractHadoopCluster createCluster(String hadoopVersion) throws CoreException {
-		logger.debug("Creating client for version "+hadoopVersion); 
+		logger.debug("Creating client for version " + hadoopVersion);
 		IConfigurationElement[] elementsFor = Platform.getExtensionRegistry().getConfigurationElementsFor("org.apache.hdt.core.hadoopCluster");
 		for (IConfigurationElement configElement : elementsFor) {
 			String version = configElement.getAttribute("protocolVersion");
-			if(version.equalsIgnoreCase(hadoopVersion)){
-				return (AbstractHadoopCluster)configElement.createExecutableExtension("class");
+			if (version.equalsIgnoreCase(hadoopVersion)) {
+				return (AbstractHadoopCluster) configElement.createExecutableExtension("class");
 			}
 		}
-		throw new CoreException(new Status(Status.ERROR,Activator.BUNDLE_ID,"No clinet found for hadoop version "+hadoopVersion));
+		throw new CoreException(new Status(Status.ERROR, Activator.BUNDLE_ID, "No clinet found for hadoop version " + hadoopVersion));
 	}
 
 	public static AbstractHadoopCluster createCluster(AbstractHadoopCluster existing) throws CoreException {
-		AbstractHadoopCluster hadoopCluster = createCluster(existing.getVersion());
+		AbstractHadoopCluster hadoopCluster = createCluster(existing.getVersion().getDisplayName());
 		hadoopCluster.load(existing);
 		return hadoopCluster;
 	}
-	
-	
-	protected static Map<String,String> loadXML(File file) {
+
+	protected static Map<String, String> loadXML(File file) {
 		DocumentBuilder builder;
 		Document document;
 		try {
@@ -132,7 +147,7 @@ public abstract class AbstractHadoopCluster {
 		if (!"configuration".equals(root.getTagName()))
 			return null;
 		NodeList props = root.getChildNodes();
-		Map<String,String> configuration= new HashMap<String, String>();
+		Map<String, String> configuration = new HashMap<String, String>();
 		for (int i = 0; i < props.getLength(); i++) {
 			Node propNode = props.item(i);
 			if (!(propNode instanceof Element))
@@ -166,7 +181,7 @@ public abstract class AbstractHadoopCluster {
 	public ConfProp getConfPropForName(String propName) {
 		return ConfProp.getByName(propName);
 	}
-	
+
 	public String getConfPropName(ConfProp prop) {
 		return prop.name;
 	}
