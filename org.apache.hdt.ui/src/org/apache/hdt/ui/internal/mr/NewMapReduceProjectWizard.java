@@ -18,12 +18,12 @@
 
 package org.apache.hdt.ui.internal.mr;
 
-import java.io.File;
-import java.io.FilenameFilter;
 import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.hdt.core.AbstractHadoopHomeReader;
+import org.apache.hdt.core.HadoopVersion;
 import org.apache.hdt.core.natures.MapReduceNature;
 import org.apache.hdt.ui.Activator;
 import org.apache.hdt.ui.ImageLibrary;
@@ -55,10 +55,14 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.DirectoryDialog;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
@@ -132,9 +136,13 @@ public class NewMapReduceProjectWizard extends Wizard implements INewWizard, IEx
 	}
 
 	static class HadoopFirstPage extends WizardNewProjectCreationPage implements SelectionListener {
-		public HadoopFirstPage() {
+		public HadoopFirstPage() throws CoreException {
 			super("New Hadoop Project");
 			setImageDescriptor(ImageLibrary.get("wizard.mapreduce.project.new"));
+			String prefVersion = Activator.getDefault().getPreferenceStore().getString(PreferenceConstants.P_VERSION);
+			prefVersion = prefVersion != null && !prefVersion.isEmpty() ? prefVersion :
+				HadoopVersion.Version1.getDisplayName();
+			homeReader = AbstractHadoopHomeReader.createReader(prefVersion);
 		}
 
 		private Link openPreferences;
@@ -150,6 +158,12 @@ public class NewMapReduceProjectWizard extends Wizard implements INewWizard, IEx
 		private String path;
 
 		public String currentPath;
+
+		AbstractHadoopHomeReader homeReader;
+
+		private Combo hadoopVersion;
+
+		private String hadoopVersionText;
 
 		// private Button generateDriver;
 
@@ -204,6 +218,47 @@ public class NewMapReduceProjectWizard extends Wizard implements INewWizard, IEx
 			browse.setEnabled(false);
 			browse.addSelectionListener(this);
 
+			/*
+			 * HDFS version
+			 */
+			{
+				Label label = new Label(group, SWT.NONE);
+				label.setText("&Hadoop Version:");
+				Combo options = new Combo(group, SWT.SINGLE | SWT.BORDER | SWT.READ_ONLY);
+				options.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+				for (HadoopVersion ver : HadoopVersion.values()) {
+					options.add(ver.getDisplayName());
+				}
+				options.addListener(SWT.Selection, new Listener() {
+					public void handleEvent(Event e) {
+						try {
+							if (!hadoopVersionText.equalsIgnoreCase(hadoopVersion.getText())) {
+								homeReader = AbstractHadoopHomeReader.createReader(hadoopVersion.getText());
+								hadoopVersionText = hadoopVersion.getText();
+								getContainer().updateButtons();
+							}
+						} catch (CoreException e1) {
+							e1.printStackTrace();
+						}
+					}
+
+				});
+
+				hadoopVersion = options;
+				if (hadoopVersionText == null || hadoopVersionText.isEmpty())
+					hadoopVersionText = HadoopVersion.Version1.getDisplayName();
+
+				int pos = 0;
+				for (String item : options.getItems()) {
+					if (item.equalsIgnoreCase(hadoopVersionText)) {
+						options.select(pos);
+						break;
+					}
+					pos++;
+				}
+				options.setEnabled(false);
+			}
+
 			projectHadoop.addSelectionListener(this);
 			workspaceHadoop.addSelectionListener(this);
 
@@ -230,24 +285,18 @@ public class NewMapReduceProjectWizard extends Wizard implements INewWizard, IEx
 		}
 
 		private boolean validateHadoopLocation() {
-			FilenameFilter gotHadoopJar = new FilenameFilter() {
-				public boolean accept(File dir, String name) {
-					return (name.startsWith("hadoop") && name.endsWith(".jar") && (name.indexOf("test") == -1) && (name.indexOf("examples") == -1));
-				}
-			};
-
 			if (workspaceHadoop.getSelection()) {
 				this.currentPath = path;
-				return new Path(path).toFile().exists() && (new Path(path).toFile().list(gotHadoopJar).length > 0);
+				return homeReader.validateHadoopHome(new Path(path).toFile());
 			} else {
 				this.currentPath = location.getText();
-				File file = new Path(location.getText()).toFile();
-				return file.exists() && (new Path(location.getText()).toFile().list(gotHadoopJar).length > 0);
+				return homeReader.validateHadoopHome(new Path(location.getText()).toFile());
 			}
 		}
 
 		private void updateHadoopDirLabelFromPreferences() {
 			path = Activator.getDefault().getPreferenceStore().getString(PreferenceConstants.P_PATH);
+			hadoopVersionText = Activator.getDefault().getPreferenceStore().getString(PreferenceConstants.P_VERSION);
 
 			if ((path != null) && (path.length() > 0)) {
 				workspaceHadoop.setText("Use default Hadoop");
@@ -288,9 +337,11 @@ public class NewMapReduceProjectWizard extends Wizard implements INewWizard, IEx
 			} else if (projectHadoop.getSelection()) {
 				location.setEnabled(true);
 				browse.setEnabled(true);
+				hadoopVersion.setEnabled(true);
 			} else {
 				location.setEnabled(false);
 				browse.setEnabled(false);
+				hadoopVersion.setEnabled(false);
 			}
 
 			getContainer().updateButtons();
@@ -304,7 +355,11 @@ public class NewMapReduceProjectWizard extends Wizard implements INewWizard, IEx
 		 * JavaProjectWizardSecondPage(firstPage) );
 		 */
 
-		firstPage = new HadoopFirstPage();
+		try {
+			firstPage = new HadoopFirstPage();
+		} catch (CoreException e) {
+			e.printStackTrace();
+		}
 		javaPage = new NewJavaProjectWizardPage(ResourcesPlugin.getWorkspace().getRoot(), firstPage);
 		// newDriverPage = new NewDriverWizardPage(false);
 		// newDriverPage.setPageComplete(false); // ensure finish button
@@ -345,6 +400,7 @@ public class NewMapReduceProjectWizard extends Wizard implements INewWizard, IEx
 						description.setNatureIds(natures);
 
 						project.setPersistentProperty(new QualifiedName(Activator.PLUGIN_ID, "hadoop.runtime.path"), firstPage.currentPath);
+						project.setPersistentProperty(new QualifiedName(Activator.PLUGIN_ID, "hadoop.version"), firstPage.hadoopVersionText);
 						project.setDescription(description, new NullProgressMonitor());
 
 						String[] natureIds = project.getDescription().getNatureIds();

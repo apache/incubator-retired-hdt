@@ -39,5 +39,13 @@
             protocolVersion="1.1">
       </hadoopCluster>
    </extension>
+   <extension
+         point="org.apache.hdt.core.hadoopHomeReader">
+      <hadoopHomeReader
+            class="org.apache.hdt.hadoop.release.HadoopHomeReader"
+            protocolVersion="1.1">
+      </hadoopHomeReader>
+   </extension>
+   
 
 </plugin>

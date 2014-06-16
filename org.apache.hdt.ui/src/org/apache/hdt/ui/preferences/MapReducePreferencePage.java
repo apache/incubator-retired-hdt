@@ -17,7 +17,9 @@
  */
 package org.apache.hdt.ui.preferences;
 
+import org.apache.hdt.core.HadoopVersion;
 import org.apache.hdt.ui.Activator;
+import org.eclipse.jface.preference.ComboFieldEditor;
 import org.eclipse.jface.preference.DirectoryFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.ui.IWorkbench;
@@ -54,6 +56,15 @@ public class MapReducePreferencePage extends FieldEditorPreferencePage
   public void createFieldEditors() {
     addField(new DirectoryFieldEditor(PreferenceConstants.P_PATH,
         "&Hadoop installation directory:", getFieldEditorParent()));
+    HadoopVersion[] versions = HadoopVersion.values();
+    String[][] values= new String[versions.length][2];
+    int pos=0;
+	for(HadoopVersion ver:versions){
+		values[pos][0]=values[pos][1]=ver.getDisplayName();
+		pos++;
+	}
+    addField(new ComboFieldEditor(PreferenceConstants.P_VERSION,
+            "&Hadoop Version:",values,getFieldEditorParent()));
 
   }
 

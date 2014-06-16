@@ -32,4 +32,11 @@
             protocolVersion="2.2">
       </hdfsClient>
    </extension>
+   <extension
+         point="org.apache.hdt.core.hadoopHomeReader">
+      <hadoopHomeReader
+            class="org.apache.hdt.hadoop2.release.HadoopHomeReader"
+            protocolVersion="2.2">
+      </hadoopHomeReader>
+   </extension>
 </plugin>

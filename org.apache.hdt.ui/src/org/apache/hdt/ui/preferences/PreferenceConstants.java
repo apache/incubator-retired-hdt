@@ -24,6 +24,8 @@ package org.apache.hdt.ui.preferences;
 public class PreferenceConstants {
 
   public static final String P_PATH = "pathPreference";
+  
+  public static final String P_VERSION = "versionPreference";
 
   // public static final String P_BOOLEAN = "booleanPreference";
   //

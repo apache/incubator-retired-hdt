@@ -19,13 +19,13 @@
 package org.apache.hdt.core.natures;
 
 import java.io.File;
-import java.io.FilenameFilter;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.hdt.core.AbstractHadoopHomeReader;
 import org.apache.hdt.core.Activator;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectNature;
@@ -60,12 +60,10 @@ public class MapReduceNature implements IProjectNature {
 	public void configure() throws CoreException {
 
 		String hadoopHomePath = project.getPersistentProperty(new QualifiedName(Activator.BUNDLE_ID, "hadoop.runtime.path"));
-		File hadoopHome = new Path(hadoopHomePath).toFile();
-		File hadoopLib = new File(hadoopHome, "lib");
-
-		final ArrayList<File> coreJars = new ArrayList<File>();
-		coreJars.addAll(getJarFiles(hadoopHome));
-		coreJars.addAll(getJarFiles(hadoopLib));
+		String hadoopVersion = project.getPersistentProperty(new QualifiedName(Activator.BUNDLE_ID, "hadoop.version"));
+		
+		AbstractHadoopHomeReader homeReader = AbstractHadoopHomeReader.createReader(hadoopVersion);
+		final List<File> coreJars = homeReader.getHadoopJars(new Path(hadoopHomePath).toFile());
 
 		// Add Hadoop libraries onto classpath
 		IJavaProject javaProject = JavaCore.create(getProject());
@@ -94,20 +92,6 @@ public class MapReduceNature implements IProjectNature {
 		} catch (Exception e) {
 			log.log(Level.SEVERE, "IOException generated in " + this.getClass().getCanonicalName(), e);
 		}
-	}
-
-	private ArrayList<File> getJarFiles(File hadoopHome) {
-		FilenameFilter jarFileFilter = new FilenameFilter() {
-			@Override
-			public boolean accept(File dir, String name) {
-				return name.endsWith(".jar");
-			}
-		};
-		final ArrayList<File> jars = new ArrayList<File>();
-		for (String hadopCoreLibFileName : hadoopHome.list(jarFileFilter)) {
-			jars.add(new File(hadoopHome, hadopCoreLibFileName));
-		}
-		return jars;
 	}
 
 	/**

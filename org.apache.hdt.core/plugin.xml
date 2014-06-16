@@ -20,6 +20,7 @@
    <extension-point id="org.apache.hdt.core.hdfsClient" name="Apache Hadoop HDFS Client" schema="schema/org.apache.hadoop.eclipse.hdfsclient.exsd"/>
    <extension-point id="org.apache.hdt.core.zookeeperClient" name="Apache Hadoop ZooKeeper Client" schema="schema/org.apache.hadoop.eclipse.zookeeperClient.exsd"/>
    <extension-point id="org.apache.hdt.core.hadoopCluster" name="Apache Hadoop Cluster" schema="schema/org.apache.hadoop.eclipse.hadoopCluster.exsd"/>
+   <extension-point id="org.apache.hdt.core.hadoopHomeReader" name="Apache Hadoop Home Location Reader" schema="schema/org.apache.hadoop.eclipse.hadoopHomeReader.exsd"/>
    
    <extension
          id="org.apache.hadoop.hdfs.filesystem"
