@@ -271,7 +271,7 @@ public class HadoopCluster extends AbstractHadoopCluster {
 	 *            the job to remove
 	 */
 	public void purgeJob(final IHadoopJob job) {
-		runningJobs.remove(job.getJobID());
+		runningJobs.remove(JobID.forName(job.getJobID()));
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
 				fireJobRemoved(job);
