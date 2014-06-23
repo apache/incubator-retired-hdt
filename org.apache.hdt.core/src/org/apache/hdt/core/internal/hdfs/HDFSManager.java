@@ -207,6 +207,7 @@ public class HDFSManager {
 									"HDFS Error", "Unable to create HDFS site :"+e.getMessage());
 						}
 					});
+					deleteServer(getServer(hdfsURI.toString()));
 					return e.getStatus();
 				} finally {
 					monitor.done();
@@ -280,7 +281,17 @@ public class HDFSManager {
 		String projectName = this.serverToProjectMap.remove(server);
 		this.projectToServerMap.remove(projectName);
 		this.uriToServerMap.remove(server.getUri());
+		this.uriToServerCacheMap.remove(server.getUri());
 		HadoopManager.INSTANCE.saveServers();
+		String tmpUri = server.getUri();
+		while (tmpUri != null && uriToServerCacheMap.containsKey(tmpUri)) {
+			uriToServerCacheMap.remove(tmpUri);
+			int lastSlashIndex = tmpUri.lastIndexOf('/');
+			tmpUri = lastSlashIndex < 0 ? null : tmpUri.substring(0, lastSlashIndex);
+		}
+		if(hdfsClientsMap.containsKey(server.getUri().toString())){
+			hdfsClientsMap.remove(server.getUri().toString());
+		}
 	}
 
 	/**
