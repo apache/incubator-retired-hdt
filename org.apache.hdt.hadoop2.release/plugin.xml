@@ -16,21 +16,27 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 -->
-<fragment>
+<plugin>
+<extension
+         point="org.apache.hdt.core.hadoopCluster" >
+      <hadoopCluster
+            class="org.apache.hdt.hadoop2.release.HadoopCluster"
+            protocolVersion="2.2">
+      </hadoopCluster>
+   </extension>
    <extension
          point="org.apache.hdt.core.hdfsClient">
       <hdfsClient
-            class="org.apache.hdt.hadoop.release.HDFSClientRelease"
+            class="org.apache.hdt.hadoop2.release.HDFSClientRelease"
             protocol="hdfs"
-            protocolVersion="1.1.2.21">
+            protocolVersion="2.2">
       </hdfsClient>
    </extension>
    <extension
-         point="org.apache.hdt.core.zookeeperClient">
-      <zookeeperClient
-            class="org.apache.hdt.hadoop.release.ZooKeeperClientRelease"
-            protocolVersion="3.4.5">
-      </zookeeperClient>
+         point="org.apache.hdt.core.hadoopHomeReader">
+      <hadoopHomeReader
+            class="org.apache.hdt.hadoop2.release.HadoopHomeReader"
+            protocolVersion="2.2">
+      </hadoopHomeReader>
    </extension>
-
-</fragment>
+</plugin>

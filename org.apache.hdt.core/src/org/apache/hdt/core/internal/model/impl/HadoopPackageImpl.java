@@ -196,6 +196,15 @@ public class HadoopPackageImpl extends EPackageImpl implements HadoopPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EAttribute getHDFSServer_Version() {
+		return (EAttribute)hdfsServerEClass.getEStructuralFeatures().get(4);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public EClass getServers() {
 		return serversEClass;
 	}
@@ -494,6 +503,7 @@ public class HadoopPackageImpl extends EPackageImpl implements HadoopPackage {
 		createEAttribute(hdfsServerEClass, HDFS_SERVER__OPERATION_UR_IS);
 		createEAttribute(hdfsServerEClass, HDFS_SERVER__USER_ID);
 		createEAttribute(hdfsServerEClass, HDFS_SERVER__GROUP_IDS);
+		createEAttribute(hdfsServerEClass, HDFS_SERVER__VERSION);
 
 		serversEClass = createEClass(SERVERS);
 		createEReference(serversEClass, SERVERS__HDFS_SERVERS);
@@ -570,6 +580,7 @@ public class HadoopPackageImpl extends EPackageImpl implements HadoopPackage {
 		initEAttribute(getHDFSServer_OperationURIs(), ecorePackage.getEString(), "operationURIs", null, 0, -1, HDFSServer.class, IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getHDFSServer_UserId(), ecorePackage.getEString(), "userId", null, 0, 1, HDFSServer.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getHDFSServer_GroupIds(), ecorePackage.getEString(), "groupIds", null, 0, -1, HDFSServer.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getHDFSServer_Version(), ecorePackage.getEString(), "version", "1.0.0.0", 0, 1, HDFSServer.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(serversEClass, Servers.class, "Servers", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getServers_HdfsServers(), this.getHDFSServer(), null, "hdfsServers", null, 0, -1, Servers.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

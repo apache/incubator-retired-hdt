@@ -2,7 +2,7 @@
 <feature
       id="org.apache.hdt.feature"
       label="Hadoop Development Tools"
-      version="0.0.1.incubating"
+      version="0.0.2.incubating"
       provider-name="Apache Software Foundation">
 
    <description url="http://hdt.incubator.apache.org/">
@@ -35,12 +35,20 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
 or implied. See the License for the specific language governing
 permissions and limitations under the License.
    </license>
-
+   
    <plugin
          id="org.apache.hdt.hadoop.release"
          download-size="0"
          install-size="0"
-         version="0.0.1.incubating"
+         version="0.0.2.incubating"
+         fragment="true"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.hdt.hadoop2.release"
+         download-size="0"
+         install-size="0"
+         version="0.0.2.incubating"
          fragment="true"
          unpack="false"/>
 
@@ -48,14 +56,14 @@ permissions and limitations under the License.
          id="org.apache.hdt.ui"
          download-size="0"
          install-size="0"
-         version="0.0.1.incubating"
+         version="0.0.2.incubating"
          unpack="false"/>
          
    <plugin
          id="org.apache.hdt.core"
          download-size="0"
          install-size="0"
-         version="0.0.1.incubating"
+         version="0.0.2.incubating"
          unpack="false"/>
 
 </feature>

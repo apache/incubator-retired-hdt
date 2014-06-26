@@ -25,7 +25,7 @@ under the License.
   </parent>
   <groupId>org.apache.hdt</groupId>
   <artifactId>hdt.master</artifactId>
-  <version>0.0.1.incubating</version>
+  <version>0.0.2.incubating</version>
   <packaging>pom</packaging>
   <name>Apache Hadoop Development Tools</name>
   <description>Eclipse tools for developing against the Hadoop platform</description>
@@ -127,6 +127,7 @@ under the License.
     <module>org.apache.hdt.core</module>
     <module>org.apache.hdt.ui</module>
     <module>org.apache.hdt.hadoop.release</module>
+    <module>org.apache.hdt.hadoop2.release</module>
     <module>org.apache.hdt.feature</module>
     <module>org.apache.hdt.updateSite</module>
     <module>org.apache.hdt.ui.test</module>
@@ -148,6 +149,13 @@ under the License.
         <version>${tycho-version}</version>
         <configuration>
           <pomDependencies>consider</pomDependencies>
+	  <environments>
+            <environment>
+	      <os>linux</os>
+              <ws>gtk</ws>
+              <arch>x86_64</arch>
+            </environment>
+          </environments>
         </configuration>
       </plugin>
      
@@ -206,7 +214,7 @@ under the License.
             </archive>
           </configuration>
         </plugin>
-          <plugin>
+        <plugin>
           <groupId>org.eclipse.tycho</groupId>
           <artifactId>tycho-versions-plugin</artifactId>
           <version>${tycho-version}</version>          

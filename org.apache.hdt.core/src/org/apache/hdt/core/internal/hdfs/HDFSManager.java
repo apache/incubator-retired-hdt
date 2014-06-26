@@ -18,6 +18,7 @@
 
 package org.apache.hdt.core.internal.hdfs;
 
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -37,13 +38,19 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.resources.WorkspaceJob;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.SubProgressMonitor;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.team.core.RepositoryProvider;
 
 /**
@@ -143,7 +150,7 @@ public class HDFSManager {
 	 * @return
 	 * @throws CoreException
 	 */
-	public HDFSServer createServer(String name, java.net.URI hdfsURI, String userId, List<String> groupIds) throws CoreException {
+	public HDFSServer createServer(String name, java.net.URI hdfsURI, String userId, List<String> groupIds,String version) throws CoreException {
 		if (hdfsURI.getPath() == null || hdfsURI.getPath().length() < 1) {
 			try {
 				hdfsURI = new java.net.URI(hdfsURI.toString() + "/");
@@ -156,6 +163,7 @@ public class HDFSManager {
 		hdfsServer.setName(name);
 		hdfsServer.setUri(hdfsURI.toString());
 		hdfsServer.setLoaded(true);
+		hdfsServer.setVersion(version);
 		if (userId != null)
 			hdfsServer.setUserId(userId);
 		if (groupIds != null)
@@ -176,14 +184,40 @@ public class HDFSManager {
 	 * @return
 	 * @throws CoreException
 	 */
-	private IProject createIProject(String name, java.net.URI hdfsURI) throws CoreException {
+	private IProject createIProject(String name, final java.net.URI hdfsURI) {
 		final IWorkspace workspace = ResourcesPlugin.getWorkspace();
-		IProject project = workspace.getRoot().getProject(name);
-		IProjectDescription pd = workspace.newProjectDescription(name);
-		pd.setLocationURI(hdfsURI);
-		project.create(pd, new NullProgressMonitor());
-		project.open(new NullProgressMonitor());
-		RepositoryProvider.map(project, HDFSTeamRepositoryProvider.ID);
+		final IProject project = workspace.getRoot().getProject(name);
+		final IProjectDescription pd = workspace.newProjectDescription(name);
+	    WorkspaceJob operation = new WorkspaceJob("Adding HDFS Location") {
+
+			@Override
+			public IStatus runInWorkspace(IProgressMonitor monitor) throws CoreException {
+				monitor.beginTask("Creating Project", 100);
+				try {
+					pd.setLocationURI(hdfsURI);
+					project.create(pd, new SubProgressMonitor(monitor, 70));
+					project.open(IResource.BACKGROUND_REFRESH, new SubProgressMonitor(monitor, 30));
+					RepositoryProvider.map(project, HDFSTeamRepositoryProvider.ID);
+					return Status.OK_STATUS;
+				} catch (final CoreException e) {
+					logger.error("error found in creating HDFS site", e);
+					Display.getDefault().syncExec(new Runnable(){
+						public void run(){
+							MessageDialog.openError(Display.getDefault().getActiveShell(), 
+									"HDFS Error", "Unable to create HDFS site :"+e.getMessage());
+						}
+					});
+					deleteServer(getServer(hdfsURI.toString()));
+					return e.getStatus();
+				} finally {
+					monitor.done();
+				}
+			}
+		   };
+		operation.setPriority(Job.LONG);
+		operation.setUser(true);
+		operation.setRule(project);
+		operation.schedule();
 		return project;
 	}
 
@@ -204,6 +238,8 @@ public class HDFSManager {
 		}
 		return uriToServerCacheMap.get(uri);
 	}
+	
+	
 
 	public String getProjectName(HDFSServer server) {
 		return serverToProjectMap.get(server);
@@ -245,7 +281,17 @@ public class HDFSManager {
 		String projectName = this.serverToProjectMap.remove(server);
 		this.projectToServerMap.remove(projectName);
 		this.uriToServerMap.remove(server.getUri());
+		this.uriToServerCacheMap.remove(server.getUri());
 		HadoopManager.INSTANCE.saveServers();
+		String tmpUri = server.getUri();
+		while (tmpUri != null && uriToServerCacheMap.containsKey(tmpUri)) {
+			uriToServerCacheMap.remove(tmpUri);
+			int lastSlashIndex = tmpUri.lastIndexOf('/');
+			tmpUri = lastSlashIndex < 0 ? null : tmpUri.substring(0, lastSlashIndex);
+		}
+		if(hdfsClientsMap.containsKey(server.getUri().toString())){
+			hdfsClientsMap.remove(server.getUri().toString());
+		}
 	}
 
 	/**
@@ -255,7 +301,7 @@ public class HDFSManager {
 	 * @return
 	 * @throws CoreException
 	 */
-	public HDFSClient getClient(String serverURI) throws CoreException {
+	public HDFSClient getClient(String serverURI,String hdfsVersion) throws CoreException {
 		if (logger.isDebugEnabled())
 			logger.debug("getClient(" + serverURI + "): Server=" + serverURI);
 		HDFSServer server = getServer(serverURI);
@@ -272,8 +318,11 @@ public class HDFSManager {
 				IConfigurationElement[] elementsFor = Platform.getExtensionRegistry().getConfigurationElementsFor("org.apache.hdt.core.hdfsClient");
 				for (IConfigurationElement element : elementsFor) {
 					if (sUri.getScheme().equals(element.getAttribute("protocol"))) {
-						HDFSClient client = (HDFSClient) element.createExecutableExtension("class");
-						hdfsClientsMap.put(serverURI, new InterruptableHDFSClient(serverURI, client));
+						String version = element.getAttribute("protocolVersion");
+						if(hdfsVersion.equalsIgnoreCase(version)){
+							HDFSClient client = (HDFSClient) element.createExecutableExtension("class");
+							hdfsClientsMap.put(serverURI, new InterruptableHDFSClient(serverURI, client));						
+						}
 					}
 				}
 			} catch (URISyntaxException e) {
@@ -281,5 +330,19 @@ public class HDFSManager {
 			}
 			return hdfsClientsMap.get(serverURI);
 		}
+	}
+	
+	public static org.eclipse.core.runtime.IStatus addServer(String serverName, String location,
+			String userId, List<String> groupId,String version) {
+		try {
+			HDFSManager.INSTANCE.createServer(serverName, new URI(location), userId, groupId,version);
+		} catch (CoreException e) {
+			logger.warn(e.getMessage(), e);
+			return e.getStatus();
+		} catch (URISyntaxException e) {
+			logger.warn(e.getMessage(), e);
+			return new Status(Status.ERROR,"unknown",e.getMessage(),e);
+		}
+		return Status.OK_STATUS;
 	}
 }

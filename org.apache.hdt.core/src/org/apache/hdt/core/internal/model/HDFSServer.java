@@ -33,6 +33,7 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link org.apache.hdt.core.internal.model.HDFSServer#getOperationURIs <em>Operation UR Is</em>}</li>
  *   <li>{@link org.apache.hdt.core.internal.model.HDFSServer#getUserId <em>User Id</em>}</li>
  *   <li>{@link org.apache.hdt.core.internal.model.HDFSServer#getGroupIds <em>Group Ids</em>}</li>
+ *   <li>{@link org.apache.hdt.core.internal.model.HDFSServer#getVersion <em>Version</em>}</li>
  * </ul>
  * </p>
  *
@@ -123,5 +124,32 @@ public interface HDFSServer extends Server {
 	 * @generated
 	 */
 	EList<String> getGroupIds();
+
+	/**
+	 * Returns the value of the '<em><b>Version</b></em>' attribute.
+	 * The default value is <code>"1.0.0.0"</code>.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Version</em>' attribute isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Version</em>' attribute.
+	 * @see #setVersion(String)
+	 * @see org.apache.hdt.core.internal.model.HadoopPackage#getHDFSServer_Version()
+	 * @model default="1.0.0.0"
+	 * @generated
+	 */
+	String getVersion();
+
+	/**
+	 * Sets the value of the '{@link org.apache.hdt.core.internal.model.HDFSServer#getVersion <em>Version</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Version</em>' attribute.
+	 * @see #getVersion()
+	 * @generated
+	 */
+	void setVersion(String value);
 
 } // HDFSServer

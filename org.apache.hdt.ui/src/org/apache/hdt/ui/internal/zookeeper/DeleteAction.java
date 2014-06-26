@@ -18,7 +18,6 @@
  */
 package org.apache.hdt.ui.internal.zookeeper;
 
-import java.io.IOException;
 import java.util.Iterator;
 
 import org.apache.hdt.core.internal.model.ZNode;
@@ -27,9 +26,12 @@ import org.apache.hdt.core.internal.zookeeper.ZooKeeperManager;
 import org.apache.hdt.core.zookeeper.ZooKeeperClient;
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.navigator.resources.ProjectExplorer;
@@ -39,7 +41,12 @@ public class DeleteAction implements IObjectActionDelegate {
 	private final static Logger logger = Logger.getLogger(DeleteAction.class);
 	private ISelection selection;
 	private IWorkbenchPart targetPart;
-
+	
+	
+	private void showError(String message) {
+		MessageDialog.openError(Display.getDefault().getActiveShell(), 
+				"ZooKeeper Delete Error", message);
+	}
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -47,48 +54,54 @@ public class DeleteAction implements IObjectActionDelegate {
 	 */
 	@Override
 	public void run(IAction action) {
-		if (this.selection != null && !this.selection.isEmpty()) {
-			IStructuredSelection sSelection = (IStructuredSelection) this.selection;
-			@SuppressWarnings("rawtypes")
-			Iterator itr = sSelection.iterator();
-			while (itr.hasNext()) {
-				Object object = itr.next();
-				if (object instanceof ZooKeeperServer) {
-					ZooKeeperServer r = (ZooKeeperServer) object;
-					if (logger.isDebugEnabled())
-						logger.debug("Deleting: " + r);
-					try {
-						ZooKeeperManager.INSTANCE.disconnect(r);
-					} finally {
+		Display.getDefault().syncExec(new Runnable() {
+			@Override
+			public void run() {
+				if (selection != null && !selection.isEmpty()) {
+				IStructuredSelection sSelection = (IStructuredSelection) selection;
+				@SuppressWarnings("rawtypes")
+				Iterator itr = sSelection.iterator();
+				while (itr.hasNext()) {
+					Object object = itr.next();
+					if (object instanceof ZooKeeperServer) {
+						ZooKeeperServer r = (ZooKeeperServer) object;
+						if (logger.isDebugEnabled())
+							logger.debug("Deleting: " + r);
 						try {
-							ZooKeeperManager.INSTANCE.delete(r);
+							ZooKeeperManager.INSTANCE.disconnect(r);
 						} catch (CoreException e) {
-							logger.error(e.getMessage());
+							logger.error("Error occurred ", e);
+						} finally {
+							 try {
+								ZooKeeperManager.INSTANCE.delete(r);
+							} catch (CoreException e) {
+								logger.error("Error occurred ", e);
+								IStatus status = e.getStatus();
+								showError(status.getException().getMessage());
+							}
+						}
+						if (logger.isDebugEnabled())
+							logger.debug("Deleted: " + r);
+						if (targetPart instanceof ProjectExplorer) {
+							ProjectExplorer pe = (ProjectExplorer) targetPart;
+							pe.getCommonViewer().refresh();
+						}
+					} else if (object instanceof ZNode) {
+						ZNode zkn = (ZNode) object;
+						if (logger.isDebugEnabled())
+							logger.debug("Deleting: " + zkn);
+						try {
+							ZooKeeperClient client = ZooKeeperManager.INSTANCE.getClient(zkn.getServer());
+							client.delete(zkn);
+						} catch (Exception e) {
+							logger.error("Error occurred ", e);
+							showError(e.getMessage());
 						}
 					}
-					if (logger.isDebugEnabled())
-						logger.debug("Deleted: " + r);
-					if (targetPart instanceof ProjectExplorer) {
-						ProjectExplorer pe = (ProjectExplorer) targetPart;
-						pe.getCommonViewer().refresh();
-					}
-				} else if (object instanceof ZNode) {
-					ZNode zkn = (ZNode) object;
-					if (logger.isDebugEnabled())
-						logger.debug("Deleting: " + zkn);
-					try {
-						ZooKeeperClient client = ZooKeeperManager.INSTANCE.getClient(zkn.getServer());
-						client.delete(zkn);
-					} catch (CoreException e) {
-						logger.error(e.getMessage(), e);
-					} catch (IOException e) {
-						logger.error(e.getMessage(), e);
-					} catch (InterruptedException e) {
-						logger.error(e.getMessage(), e);
-					}
 				}
-			}
-		}
+			}}
+		});
+		
 	}
 
 	/*

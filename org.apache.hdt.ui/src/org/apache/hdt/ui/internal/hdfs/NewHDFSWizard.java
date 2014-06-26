@@ -17,25 +17,26 @@
  */
 package org.apache.hdt.ui.internal.hdfs;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-
 import org.apache.hdt.core.internal.hdfs.HDFSManager;
 import org.apache.hdt.ui.Activator;
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExecutableExtension;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.wizards.newresource.BasicNewProjectResourceWizard;
 
-public class NewHDFSWizard extends Wizard implements INewWizard {
+public class NewHDFSWizard extends Wizard implements INewWizard,IExecutableExtension {
 
 	private static Logger logger = Logger.getLogger(NewHDFSWizard.class);
 	private NewHDFSServerWizardPage serverLocationWizardPage = null;
+	private IConfigurationElement configElement;
 
 	public NewHDFSWizard() {
 		// TODO Auto-generated constructor stub
@@ -61,6 +62,11 @@ public class NewHDFSWizard extends Wizard implements INewWizard {
 
 	@Override
 	public boolean performFinish() {
+		Display.getDefault().syncExec(new Runnable() {
+			public void run() {
+				BasicNewProjectResourceWizard.updatePerspective(configElement);
+			}
+		});
 		if (serverLocationWizardPage != null) {
 			String ambariUrl = serverLocationWizardPage.getHdfsServerLocation();
 			if (ambariUrl != null) {
@@ -73,17 +79,10 @@ public class NewHDFSWizard extends Wizard implements INewWizard {
 
 				Job j = new Job("Creating HDFS project [" + serverLocationWizardPage.getHdfsServerName() + "]") {
 					protected org.eclipse.core.runtime.IStatus run(org.eclipse.core.runtime.IProgressMonitor monitor) {
-						try {
-							HDFSManager.INSTANCE.createServer(serverLocationWizardPage.getHdfsServerName(), new URI(serverLocationWizardPage
-									.getHdfsServerLocation()), serverLocationWizardPage.isOverrideDefaultSecurity() ? serverLocationWizardPage.getUserId()
-									: null, serverLocationWizardPage.isOverrideDefaultSecurity() ? serverLocationWizardPage.getGroupIds() : null);
-						} catch (CoreException e) {
-							logger.warn(e.getMessage(), e);
-							return e.getStatus();
-						} catch (URISyntaxException e) {
-							logger.warn(e.getMessage(), e);
-						}
-						return Status.OK_STATUS;
+						return HDFSManager.addServer(serverLocationWizardPage.getHdfsServerName(),serverLocationWizardPage.getHdfsServerLocation(),
+								serverLocationWizardPage.isOverrideDefaultSecurity() ? serverLocationWizardPage.getUserId() : null,
+								serverLocationWizardPage.isOverrideDefaultSecurity() ? serverLocationWizardPage.getGroupIds() : null,
+										serverLocationWizardPage.getHDFSVersion());
 					};
 				};
 				j.schedule();
@@ -92,5 +91,14 @@ public class NewHDFSWizard extends Wizard implements INewWizard {
 		}
 		return false;
 	}
+	/* (non-Javadoc)
+	 * @see org.eclipse.core.runtime.IExecutableExtension#setInitializationData
+	 * (org.eclipse.core.runtime.IConfigurationElement, java.lang.String, java.lang.Object)
+	 */
+	@Override
+	public void setInitializationData(IConfigurationElement config, String propertyName, Object data) throws CoreException {
+		this.configElement=config;
+	}
+	
 
 }

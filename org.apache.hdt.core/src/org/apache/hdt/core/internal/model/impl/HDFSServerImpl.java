@@ -43,6 +43,7 @@ import org.eclipse.emf.ecore.util.EDataTypeUniqueEList;
  *   <li>{@link org.apache.hdt.core.internal.model.impl.HDFSServerImpl#getOperationURIs <em>Operation UR Is</em>}</li>
  *   <li>{@link org.apache.hdt.core.internal.model.impl.HDFSServerImpl#getUserId <em>User Id</em>}</li>
  *   <li>{@link org.apache.hdt.core.internal.model.impl.HDFSServerImpl#getGroupIds <em>Group Ids</em>}</li>
+ *   <li>{@link org.apache.hdt.core.internal.model.impl.HDFSServerImpl#getVersion <em>Version</em>}</li>
  * </ul>
  * </p>
  *
@@ -108,6 +109,26 @@ public class HDFSServerImpl extends ServerImpl implements HDFSServer {
 	 * @ordered
 	 */
 	protected EList<String> groupIds;
+
+	/**
+	 * The default value of the '{@link #getVersion() <em>Version</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getVersion()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final String VERSION_EDEFAULT = "1.0.0.0";
+
+	/**
+	 * The cached value of the '{@link #getVersion() <em>Version</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getVersion()
+	 * @generated
+	 * @ordered
+	 */
+	protected String version = VERSION_EDEFAULT;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -199,6 +220,27 @@ public class HDFSServerImpl extends ServerImpl implements HDFSServer {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public String getVersion() {
+		return version;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setVersion(String newVersion) {
+		String oldVersion = version;
+		version = newVersion;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, HadoopPackage.HDFS_SERVER__VERSION, oldVersion, version));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
@@ -210,6 +252,8 @@ public class HDFSServerImpl extends ServerImpl implements HDFSServer {
 				return getUserId();
 			case HadoopPackage.HDFS_SERVER__GROUP_IDS:
 				return getGroupIds();
+			case HadoopPackage.HDFS_SERVER__VERSION:
+				return getVersion();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -237,6 +281,9 @@ public class HDFSServerImpl extends ServerImpl implements HDFSServer {
 				getGroupIds().clear();
 				getGroupIds().addAll((Collection<? extends String>)newValue);
 				return;
+			case HadoopPackage.HDFS_SERVER__VERSION:
+				setVersion((String)newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -261,6 +308,9 @@ public class HDFSServerImpl extends ServerImpl implements HDFSServer {
 			case HadoopPackage.HDFS_SERVER__GROUP_IDS:
 				getGroupIds().clear();
 				return;
+			case HadoopPackage.HDFS_SERVER__VERSION:
+				setVersion(VERSION_EDEFAULT);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -281,6 +331,8 @@ public class HDFSServerImpl extends ServerImpl implements HDFSServer {
 				return USER_ID_EDEFAULT == null ? userId != null : !USER_ID_EDEFAULT.equals(userId);
 			case HadoopPackage.HDFS_SERVER__GROUP_IDS:
 				return groupIds != null && !groupIds.isEmpty();
+			case HadoopPackage.HDFS_SERVER__VERSION:
+				return VERSION_EDEFAULT == null ? version != null : !VERSION_EDEFAULT.equals(version);
 		}
 		return super.eIsSet(featureID);
 	}
@@ -303,6 +355,8 @@ public class HDFSServerImpl extends ServerImpl implements HDFSServer {
 		result.append(userId);
 		result.append(", groupIds: ");
 		result.append(groupIds);
+		result.append(", version: ");
+		result.append(version);
 		result.append(')');
 		return result.toString();
 	}

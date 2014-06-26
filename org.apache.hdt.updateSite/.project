@@ -6,6 +6,7 @@
 		<project>org.apache.hdt.core</project>
 		<project>org.apache.hdt.feature</project>
 		<project>org.apache.hdt.hadoop.release</project>
+		<project>org.apache.hdt.hadoop2.release</project>
 		<project>org.apache.hdt.ui</project>
 	</projects>
 	<buildSpec>

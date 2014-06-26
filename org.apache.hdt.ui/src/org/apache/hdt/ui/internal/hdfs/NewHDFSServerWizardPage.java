@@ -24,8 +24,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import org.apache.hdt.core.HadoopVersion;
 import org.apache.hdt.core.hdfs.HDFSClient;
 import org.apache.hdt.core.internal.hdfs.HDFSManager;
+import org.apache.hdt.core.launch.ConfProp;
 import org.apache.hdt.ui.Activator;
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.CoreException;
@@ -41,8 +43,10 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 
 public class NewHDFSServerWizardPage extends WizardPage {
@@ -55,6 +59,8 @@ public class NewHDFSServerWizardPage extends WizardPage {
 	private String hdfsServerName = null;
 	private boolean overrideDefaultSecurity = false;
 	private String userId = null;
+	private Combo hdfsVersionOptions;
+	private String hdfsVersion;;
 	private List<String> groupIds = new ArrayList<String>();
 
 	protected NewHDFSServerWizardPage() {
@@ -115,6 +121,31 @@ public class NewHDFSServerWizardPage extends WizardPage {
 		Label exampleLabel = new Label(c, SWT.NONE);
 		exampleLabel.setText("Example: hdfs://hdfs.server.hostname:8020");
 		exampleLabel.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_DARK_GRAY));
+		
+		/*
+		 * HDFS version
+		 */
+		{
+			Label label = new Label(c, SWT.NONE);
+			label.setText("&HDFS Version:");
+			Combo options =  new Combo (c, SWT.SINGLE | SWT.BORDER|SWT.READ_ONLY);
+			options.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+			for(HadoopVersion ver:HadoopVersion.values()){
+				options.add(ver.getDisplayName());
+			}
+			options.addListener (SWT.Selection, new Listener () {
+
+				@Override
+				public void handleEvent(Event arg0) {
+					hdfsVersion = hdfsVersionOptions.getText();
+				}
+				
+			});
+			options.select(0);
+			hdfsVersion=options.getItem(0);
+			hdfsVersionOptions = options;
+		}
+		
 		// Security
 		Group securityGroup = new Group(c, SWT.SHADOW_ETCHED_IN);
 		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
@@ -191,7 +222,7 @@ public class NewHDFSServerWizardPage extends WizardPage {
 	private List<String> getUserAndGroupIds() {
 		List<String> list = new ArrayList<String>();
 		try {
-			HDFSClient client = HDFSManager.INSTANCE.getClient(hdfsServerLocation);
+			HDFSClient client = HDFSManager.INSTANCE.getClient(hdfsServerLocation,ConfProp.PI_HADOOP_VERSION.defVal);
 			List<String> defaultUserAndGroupIds = client.getDefaultUserAndGroupIds();
 			if (defaultUserAndGroupIds != null)
 				list.addAll(defaultUserAndGroupIds);
@@ -238,5 +269,9 @@ public class NewHDFSServerWizardPage extends WizardPage {
 
 	public List<String> getGroupIds() {
 		return groupIds;
+	}
+
+	public String getHDFSVersion() {
+		return hdfsVersion;
 	}
 }

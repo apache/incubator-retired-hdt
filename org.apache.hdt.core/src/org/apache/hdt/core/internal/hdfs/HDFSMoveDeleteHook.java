@@ -18,6 +18,7 @@
 
 package org.apache.hdt.core.internal.hdfs;
 
+import org.apache.hdt.core.internal.model.HDFSServer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -77,6 +78,8 @@ public class HDFSMoveDeleteHook implements IMoveDeleteHook {
 				throw new RuntimeException(
 						"Deletion of HDFS project root folder is not supported. To remove project uncheck the \'Delete project contents on disk\' checkbox");
 			}
+			HDFSServer server = HDFSManager.INSTANCE.getServer(project.getLocationURI().toString());
+			HDFSManager.INSTANCE.deleteServer(server);
 		}
 		return false;
 	}

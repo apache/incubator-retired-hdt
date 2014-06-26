@@ -44,7 +44,7 @@ public class HadoopFactoryImpl extends EFactoryImpl implements HadoopFactory {
 	 */
 	public static HadoopFactory init() {
 		try {
-			HadoopFactory theHadoopFactory = (HadoopFactory)EPackage.Registry.INSTANCE.getEFactory("http://hadoop/1.0"); 
+			HadoopFactory theHadoopFactory = (HadoopFactory)EPackage.Registry.INSTANCE.getEFactory(HadoopPackage.eNS_URI);
 			if (theHadoopFactory != null) {
 				return theHadoopFactory;
 			}
