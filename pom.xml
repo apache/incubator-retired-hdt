@@ -25,7 +25,7 @@ under the License.
   </parent>
   <groupId>org.apache.hdt</groupId>
   <artifactId>hdt.master</artifactId>
-  <version>0.0.2-SNAPSHOT</version>
+  <version>0.0.2.incubating</version>
   <packaging>pom</packaging>
   <name>Apache Hadoop Development Tools</name>
   <description>Eclipse tools for developing against the Hadoop platform</description>
