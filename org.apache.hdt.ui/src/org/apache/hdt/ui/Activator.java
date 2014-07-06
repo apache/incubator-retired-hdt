@@ -23,6 +23,8 @@ import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.ui.ISharedImages;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -104,32 +106,29 @@ public class Activator extends AbstractUIPlugin {
 
 	private void loadImages() {
 		Bundle bundle = getDefault().getBundle();
-		URL remoteFileUrl = FileLocator.find(bundle, new Path("/icons/ovr/remote_resource.gif"), null);
 		URL localFileUrl = FileLocator.find(bundle, new Path("/icons/ovr/local_resource.gif"), null);
 		URL incomingUrl = FileLocator.find(bundle, new Path("/icons/ovr/overlay-incoming.gif"), null);
 		URL outgoingUrl = FileLocator.find(bundle, new Path("/icons/ovr/overlay-outgoing.gif"), null);
-		URL waitingUrl = FileLocator.find(bundle, new Path("/icons/ovr/waiting_ovr.gif"), null);
 		URL hdfsUrl = FileLocator.find(bundle, new Path("/icons/hadoop-hdfs-16x16.gif"), null);
 		URL zookeeperUrl = FileLocator.find(bundle, new Path("/icons/hadoop-zookeeper-16x16.png"), null);
 		URL zookeeperNodeUrl = FileLocator.find(bundle, new Path("/icons/zookeeper_node.png"), null);
 		URL hadoopUrl = FileLocator.find(bundle, new Path("/icons/hadoop-logo-16x16.png"), null);
-		URL readonlyUrl = FileLocator.find(bundle, new Path("/icons/ovr/read_only.gif"), null);
 		URL offlineUrl = FileLocator.find(bundle, new Path("/icons/ovr/offline.png"), null);
 		URL onlineUrl = FileLocator.find(bundle, new Path("/icons/ovr/online.png"), null);
-		URL zookeeperEphermeralUrl = FileLocator.find(bundle, new Path("/icons/ovr/zookeeper_ephermeral.gif"), null);
 		
-		IMAGE_REMOTE_OVR = ImageDescriptor.createFromURL(remoteFileUrl);
+		ISharedImages sharedImages = PlatformUI.getWorkbench().getSharedImages();
+		IMAGE_REMOTE_OVR = sharedImages.getImageDescriptor(org.eclipse.team.ui.ISharedImages.IMG_CHECKEDIN_OVR);
 		IMAGE_LOCAL_OVR = ImageDescriptor.createFromURL(localFileUrl);
 		IMAGE_INCOMING_OVR = ImageDescriptor.createFromURL(incomingUrl);
 		IMAGE_OUTGOING_OVR = ImageDescriptor.createFromURL(outgoingUrl);
-		IMAGE_SYNC_OVR = ImageDescriptor.createFromURL(waitingUrl);
+		IMAGE_SYNC_OVR = sharedImages.getImageDescriptor(org.eclipse.team.ui.ISharedImages.IMG_HOURGLASS_OVR);
 		IMAGE_HDFS = ImageDescriptor.createFromURL(hdfsUrl).createImage();
 		IMAGE_HADOOP = ImageDescriptor.createFromURL(hadoopUrl);
-		IMAGE_READONLY_OVR = ImageDescriptor.createFromURL(readonlyUrl);
+		IMAGE_READONLY_OVR = sharedImages.getImageDescriptor(ISharedImages.IMG_ETOOL_SAVE_EDIT_DISABLED);
 		IMAGE_OFFLINE_OVR = ImageDescriptor.createFromURL(offlineUrl);
 		IMAGE_ONLINE_OVR = ImageDescriptor.createFromURL(onlineUrl);
 		IMAGE_ZOOKEEPER = ImageDescriptor.createFromURL(zookeeperUrl).createImage();
 		IMAGE_ZOOKEEPER_NODE = ImageDescriptor.createFromURL(zookeeperNodeUrl).createImage();
-		IMAGE_ZOOKEEPER_EPHERMERAL = ImageDescriptor.createFromURL(zookeeperEphermeralUrl);
+		IMAGE_ZOOKEEPER_EPHERMERAL =  sharedImages.getImageDescriptor(org.eclipse.team.ui.ISharedImages.IMG_HOURGLASS_OVR);
 	}
 }

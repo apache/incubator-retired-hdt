@@ -331,7 +331,7 @@
          </action>
          <action
                class="org.apache.hdt.ui.internal.zookeeper.DeleteAction"
-               icon="icons/delete.gif"
+               icon="IMG_TOOL_DELETE"
                id="org.apache.hdt.ui.team.zookeeper.node.DeleteContribution"
                label="Delete"
                menubarPath="additions">
@@ -355,7 +355,7 @@
          </action>
          <action
                class="org.apache.hdt.ui.internal.zookeeper.DeleteAction"
-               icon="icons/delete.gif"
+               icon="IMG_TOOL_DELETE"
                id="org.apache.hdt.ui.team.zookeeper.node.DeleteContribution"
                label="Delete"
                menubarPath="additions">

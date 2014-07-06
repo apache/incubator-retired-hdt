@@ -116,9 +116,9 @@ public class ImageLibrary {
 		newSharedImage("dfs.file.editor", ISharedImages.IMG_OBJ_FILE);
 		// Actions
 		newImage("dfs.browser.action.mkdir", "new-folder.png");
-		newImage("dfs.browser.action.download", "download.png");
-		newImage("dfs.browser.action.upload_files", "upload.png");
-		newImage("dfs.browser.action.upload_dir", "upload.png");
+		newImage("dfs.browser.action.download", "download.gif");
+		newImage("dfs.browser.action.upload_files", "upload.gif");
+		newImage("dfs.browser.action.upload_dir", "upload.gif");
 		newSharedImage("dfs.browser.action.delete", ISharedImages.IMG_TOOL_DELETE);
 		newImage("dfs.browser.action.refresh", "refresh.png");
 
