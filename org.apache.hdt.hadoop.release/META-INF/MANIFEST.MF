@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Apache Hadoop 0.0.1.qualifier Release Eclipse Plugin
 Bundle-SymbolicName: org.apache.hdt.hadoop.release;singleton:=true
-Bundle-Version: 0.0.2.incubating
+Bundle-Version: 0.0.3.qualifier
 Bundle-Vendor: Apache Hadoop
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.apache.hdt.core,

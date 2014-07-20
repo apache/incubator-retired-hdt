@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Apache Hadoop UI Eclipse Plugin
 Bundle-SymbolicName: org.apache.hdt.ui;singleton:=true
-Bundle-Version: 0.0.2.incubating
+Bundle-Version: 0.0.3.qualifier
 Bundle-Activator: org.apache.hdt.ui.Activator
 Bundle-Vendor: Apache Hadoop
 Require-Bundle: org.eclipse.core.runtime,
